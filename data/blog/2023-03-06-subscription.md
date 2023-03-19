@@ -1,14 +1,14 @@
 ---
-title: 'ApolloClient Subscription 에 대해서'
+title: 'Apollo Client Subscription'
 date: '2023-03-06'
-tags: ['appolo-client']
+tags: ['apollo-client']
 draft: false
-summary: 'Refresh Token 처리를 위한 처리도중 알수없는 용어인 chain, link, observable' 에 대해서 알아본다.'
+summary: 'RefreshToken 처리관련 해서 용어를 알아본다'
 ---
 
-> [ApolloClient](https://https://www.apollographql.com/docs/react/data/subscriptions) 의 `Docs` 를 참고하여 작성한 내용이다.</br> 번역하고 이해하는 과정에서 잘못된 정보가 있을수 있다.
-
 # ApolloClient Subscription
+
+> [ApolloClient](https://https://www.apollographql.com/docs/react/data/subscriptions) 의 `Docs` 를 참고하여 작성한 내용이다.</br> 번역하고 이해하는 과정에서 잘못된 정보가 있을수 있다.
 
 > `queries`, `mutations` 외에도 `GraphQl` 을 지원하기 위한 3번째 작업이 바로 `subscription` 이다.
 

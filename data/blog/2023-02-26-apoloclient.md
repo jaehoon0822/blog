@@ -6,10 +6,10 @@ draft: false
 summary: 'Queries'
 ---
 
+# Executing a query
+
 > Frontend 공부를 하면서 `graphQL` 사용시 사용되는 `ApolloClient` 의 각 `Method` 에 대한 이해가 밑바탕이 되어야 한다는 생각이 들었다. <br></br>
 > 그러한 이유로 Docs 내용을 정리해 보도록 한다.
-
-# Executing a query
 
 `useQuery` 는 `appolo application` 쿼리를 위한 `API` 이다.
 
