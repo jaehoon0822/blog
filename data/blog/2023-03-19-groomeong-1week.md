@@ -89,19 +89,19 @@ summary: 'Project 진행하며 1주 동안의 회고'
 지정된 `Token` 은 다음과 같다.
 
 > Token / Heading
-> ![Token/Heading](/public/static/images/2023-03/Heading.png)
+> ![Token/Heading](/static/images/2023-03/Heading.png)
 
 > Token / Label
-> ![Token/Label](/public/static/images/2023-03/Label.png)
+> ![Token/Label](/static/images/2023-03/Label.png)
 
 > Token / Paragraph
-> ![Token/Paragraph](/public/static/images/2023-03/Paragraph.png)
+> ![Token/Paragraph](/static/images/2023-03/Paragraph.png)
 
 > Token / Space
-> ![Token/Space](/public/static/images/2023-03/Space.png)
+> ![Token/Space](/static/images/2023-03/Space.png)
 
 > Token / Color
-> ![Token/Color](/public/static/images/2023-03/Color.png) > ![Token/Color](/public/static/images/canada/lake.jpg)
+> ![Token/Color](/static/images/2023-03/Color.png) >
 
 이렇게 만든 `Token` 은 기본적으로 이 `Service` 를 구축하는데 만들어질 가장 기본적인 틀이다.
 
@@ -162,46 +162,46 @@ Atomic Design 이란? <br/>
 
 ### Atoms / Buttons
 
-![Atoms/Color](/public/static/images/2023-03/Atoms-Button.svg)
+![Atoms/Color](/static/images/2023-03/Atoms-Button.svg)
 
 ### Atoms / Input
 
-![Atoms/Input](/public/static/images/2023-03/Atoms-Input.svg)
+![Atoms/Input](/static/images/2023-03/Atoms-Input.svg)
 
 ### Atoms / Modal
 
-![Atoms/Modal](/public/static/images/2023-03/Atoms-Modal.svg)
+![Atoms/Modal](/static/images/2023-03/Atoms-Modal.svg)
 
 ### Atoms / SearchBar
 
-![Atoms/SearchBar](/public/static/images/2023-03/Atoms-SearchBar.svg)
+![Atoms/SearchBar](/static/images/2023-03/Atoms-SearchBar.svg)
 
 ### Atoms / MapSideList
 
-![Atoms/MapSideList](/public/static/images/2023-03/MapSideList.svg)
+![Atoms/MapSideList](/static/images/2023-03/MapSideList.svg)
 
 ### Atoms / TextArea
 
-![Atoms/TextArea](/public/static/images/2023-03/Atoms-TextArea.svg)
+![Atoms/TextArea](/static/images/2023-03/Atoms-TextArea.svg)
 
 ### Atoms / CommentsList
 
-![Atoms/CommentsList](/public/static/images/2023-03/Atoms-CommentsList.svg)
+![Atoms/CommentsList](/static/images/2023-03/Atoms-CommentsList.svg)
 
 ### Atoms / Rate
 
-![Atoms/Rate](/public/static/images/2023-03/Atoms-Rate.svg)
+![Atoms/Rate](/static/images/2023-03/Atoms-Rate.svg)
 
 ### Atoms / Images
 
-![Atoms/Images](/public/static/images/2023-03/Atoms-Image.svg)
+![Atoms/Images](/static/images/2023-03/Atoms-Image.svg)
 
 ### Atoms / Badge
 
 > `Badge` 를 `Radio` 방식으로 처리하는데 `의미론적으로` 맞지는 않다.
 > 이부분은 상의를 통해서 `Badge` 를 `Radio Button` 처럼 작동하도록 미리 상의를 통해 처리한 부분이다.
 
-![Atoms/Badge](/public/static/images/2023-03/Atoms-Badge.svg)
+![Atoms/Badge](/static/images/2023-03/Atoms-Badge.svg)
 
 해당 `Componets` 는 [Components Figma](https://www.figma.com/file/JngYoKqeHWFb6bwwlCqfZR/GROOMEONG?node-id=0-1) 에서 확인가능하다
 
