@@ -103,7 +103,10 @@ summary: 'Project 진행하며 1주 동안의 회고'
 > Token / Color
 > ![Token/Color](/static/images/2023-03/Color.png) >
 
-이렇게 만든 `Token` 은 기본적으로 이 `Service` 를 구축하는데 만들어질 가장 기본적인 틀이다.
+> Token / canada
+> ![Token/Color](/static/images/canada/toronto.jpg) >
+
+> 이렇게 만든 `Token` 은 기본적으로 이 `Service` 를 구축하는데 만들어질 가장 기본적인 틀이다.
 
 `Programing` 언어에서 비교하자면 `Primary Type` 과 같은 역할을 한다.
 
