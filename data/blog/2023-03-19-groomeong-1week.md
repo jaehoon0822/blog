@@ -89,19 +89,19 @@ summary: 'Project 진행하며 1주 동안의 회고'
 지정된 `Token` 은 다음과 같다.
 
 > Token / Heading
-> ![Token/Heading](/public/static/images/2023-03/Token-Typography-Heading.svg)
+> ![Token/Heading](/public/static/images/2023-03/Heading.png)
 
 > Token / Label
-> ![Token/Label](/public/static/images/2023-03/Token-Typography-Label.svg)
+> ![Token/Label](/public/static/images/2023-03/Label.png)
 
 > Token / Paragraph
-> ![Token/Paragraph](/public/static/images/2023-03/Token-Typography-Paragraph.svg)
+> ![Token/Paragraph](/public/static/images/2023-03/Paragraph.png)
 
 > Token / Space
 > ![Token/Space](/public/static/images/2023-03/Space.png)
 
 > Token / Color
-> ![Token/Color](/public/static/images/2023-03/Color.png)
+> ![Token/Color](/public/static/images/2023-03/Color.png) > ![Token/Color](/public/static/images/canada/lake.jpg)
 
 이렇게 만든 `Token` 은 기본적으로 이 `Service` 를 구축하는데 만들어질 가장 기본적인 틀이다.
 
