@@ -205,8 +205,6 @@ Atomic Design 이란? <br/>
 
 해당 `Componets` 는 [Components Figma](https://www.figma.com/file/JngYoKqeHWFb6bwwlCqfZR/GROOMEONG?node-id=0-1) 에서 확인가능하다
 
-<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FJngYoKqeHWFb6bwwlCqfZR%2FGROOMEONG%3Fnode-id%3D0%253A1%26t%3D3hi3MkAaIMLRSpuF-1" allowfullscreen></iframe>
-
 이렇게 만들어진 각 `Component` 를 재사용하여 `Template` 를 구성한다.
 
 `Template` 역시 재구성할때 필요한 `Page` 영역을 구성한 것이므로, `Next.js` 사용시 `Dynamic Routing` 할때 사용할때 이러한 `Template` 를 사용하여 처리한다.
@@ -214,8 +212,6 @@ Atomic Design 이란? <br/>
 재사용되지 않는 `Page` 는 `Template` 를 거치지 않고, 바로 `Page` 로 구성할 것이다.
 
 이러한 `Atoms` 를 사용하여, 만들어진 페이지는 [Figma](https://www.figma.com/file/JngYoKqeHWFb6bwwlCqfZR/GROOMEONG?node-id=33-3214) 에서 확인가능하다.
-
-<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FJngYoKqeHWFb6bwwlCqfZR%2FGROOMEONG%3Fnode-id%3D33%253A3214%26t%3D3hi3MkAaIMLRSpuF-1" allowfullscreen></iframe>
 
 ## 회고
 
