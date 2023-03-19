@@ -1,5 +1,5 @@
 ---
-title: Browser 주소창의 실체
+title: 'Browser 주소창의 실체'
 date: '2023-03-01'
 tags: ['next.js']
 draft: false

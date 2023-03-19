@@ -1,5 +1,5 @@
 ---
-title: 신규 아이디 추천
+title: '신규 아이디 추천'
 date: '2023-02-27'
 tags: ['algorithm', '프로그래머스']
 draft: false

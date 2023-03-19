@@ -1,9 +1,9 @@
 ---
-title: ApolloClient Subscription 에 대해서
+title: 'ApolloClient Subscription 에 대해서'
 date: '2023-03-06'
 tags: ['ApolloClient', 'next.js']
 draft: false
-summary: 'Refresh Token 처리를 위한 처리도중 알수없는 용어인 chain, link, observable' 에 대해서 알아본다.
+summary: 'Refresh Token 처리를 위한 처리도중 알수없는 용어인 chain, link, observable' 에 대해서 알아본다.'
 ---
 
 > [ApolloClient](https://https://www.apollographql.com/docs/react/data/subscriptions) 의 `Docs` 를 참고하여 작성한 내용이다.</br> 번역하고 이해하는 과정에서 잘못된 정보가 있을수 있다.
@@ -34,16 +34,13 @@ summary: 'Refresh Token 처리를 위한 처리도중 알수없는 용어인 cha
 
    > 대부분의 객체 필드는 변경되지 않고, 어떠한 작은부분의 필드만 변경된다고 가정하자.</br>
    > 이때 지속적으로 `polling` 하는것은 굉장히 비효율적이다.</br>
-   > 필드 하나만 변경되기 위해 새로운 전체 `data` 를 가져와야 하는것이다.</br>
-   > `subscription` 은 `query` 를 보내 `initial state(초기값)` 을 가져오고, `server` 는 사전에 `update` 될때 마다 능동적으로 각 부분의 `fields` 를 넣는다.
+   > 필드 하나만 변경되기 위해 새로운 전체 `data` 를 가져와야 하는것이다.</br> > `subscription` 은 `query` 를 보내 `initial state(초기값)` 을 가져오고, `server` 는 사전에 `update` 될때 마다 능동적으로 각 부분의 `fields` 를 넣는다.
 
 2. 대기 시간이 짧은, `realtime update`
 
 > 채팅 어플리케이션 같은 경우 `client` 에서 새로운 메시지를 곧바로 받기를 원할것이다. 이때 사용된다.
 
-> _주의점_</br></br>
-> `subscription` 은 `cache` 를 변경하는 `local client event` 를 `listen` 받아 사용 할 수 없다.</br>
-> `sbuscription` 은 `external data` 가 변경될때, 사용되도록 의도 되었다.</br> 그리고, 수신받은 변경사항을 `cache` 안에 저장한다.<br>
+> _주의점_</br></br> > `subscription` 은 `cache` 를 변경하는 `local client event` 를 `listen` 받아 사용 할 수 없다.</br> > `sbuscription` 은 `external data` 가 변경될때, 사용되도록 의도 되었다.</br> 그리고, 수신받은 변경사항을 `cache` 안에 저장한다.<br>
 > 이렇게 저장된 `cache` 를 `client.watchQuery` 와 `useQuery` 를 사용하여 `cache` 의 변경을 관찰하여 사용할 수 있도록 되어있다고 한다.
 
 ## Defining a subscription

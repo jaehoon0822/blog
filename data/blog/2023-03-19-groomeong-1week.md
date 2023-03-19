@@ -1,5 +1,5 @@
 ---
-title: Groomeong 1week 회고
+title: 'Groomeong 1week 회고'
 date: '2023-03-19'
 tags: ['Project', 'Groomeong', 'Design', '회고']
 draft: false
