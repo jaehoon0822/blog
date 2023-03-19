@@ -8,22 +8,22 @@ summary: 'Project 진행하며 1주 동안의 회고'
 
 # Groomeong 1주차 회고
 
-> Groomeong Service </br>
+> Groomeong Service <br/>
 > 강아지 미용실 `Gather`
 
-강아지 미용실을 찾기 위한 서비스이다. </br>
+강아지 미용실을 찾기 위한 서비스이다. <br/>
 이러한 서비스를 생각하기 위한 이유는 다음과 같다
 
 ### 기존 시장의 문제점 및 개선 필요성
 
-강아지 미용샵 검색시, 소비자가 원하는 정보보다 `홍보 사이트`가 대부분이다.</br>
+강아지 미용샵 검색시, 소비자가 원하는 정보보다 `홍보 사이트`가 대부분이다.<br/>
 그러므로, 해당 서비스 검색을 위한 `커뮤니티` 검색이 필수적이다.
 
 이러한 부분을 파고들어 `강아지 미용실` 을 찾을 수 있는 전용 서비스를 만들어 보았다.
 
 ## 사용자 요구사항 정의
 
-> 요구사항으로 `회원` 및`관리자` 서비스가 필요했다.</br>
+> 요구사항으로 `회원` 및`관리자` 서비스가 필요했다.<br/>
 > 현 서비스는 `관리자` 가 아닌 `회원` 을 위한 서비스를 준비한다.
 
 회원
@@ -107,7 +107,7 @@ summary: 'Project 진행하며 1주 동안의 회고'
 
 `Programing` 언어에서 비교하자면 `Primary Type` 과 같은 역할을 한다.
 
-> `Token` 을 설정하면서, `Grid` 를 추가적으로 넣었지만, 구현시 `Mobile` 까지 가능한지는 조금더 상의를 해보아야 할 것같다.</br>
+> `Token` 을 설정하면서, `Grid` 를 추가적으로 넣었지만, 구현시 `Mobile` 까지 가능한지는 조금더 상의를 해보아야 할 것같다.<br/>
 > 현재 `Service` 에 들어갈 `Stack` 들을 같이 공부하며 정해진 기간안에 완성해야 하므로, 시간이 허락한다면 추가적으로 만들 생각이다.
 
 이제 `Token` 을 지정했다면, 다음은 `Atomic Design` 을 정할 차례이다.
@@ -120,19 +120,19 @@ summary: 'Project 진행하며 1주 동안의 회고'
 `Wire Frame` 이후 대략적인 틀이 완성되었다.
 `Design Token` 생성후 재사용가능한 컴포넌트를 분리하기 시작했다.
 
-Atomic Design 이란? </br>
-`Design` 시 `System` 적으로 만들 수 있도록 제시하는 방법론중 하나이다.</br></br>
+Atomic Design 이란? <br/>
+`Design` 시 `System` 적으로 만들 수 있도록 제시하는 방법론중 하나이다.<br/><br/>
 
-> 이는 각 `Design System` 을 `화학` 을 통해 영감을 받은 `Brad Frost` 에 의해 만들어졌다.</br>
+> 이는 각 `Design System` 을 `화학` 을 통해 영감을 받은 `Brad Frost` 에 의해 만들어졌다.<br/>
 
-이 이론을 간략하게 이야기 하면 다음과 같다</br></br>
+이 이론을 간략하게 이야기 하면 다음과 같다<br/><br/>
 
-`Design` 상 가장 작은 단위를 `Atoms(원자)` 로 구성한다.</br>
-`Atoms` 를 조합하여 `Molecules(분자)` 를 구성한다 </br>
-`Molecules(분자)` 를 조합하여 `Organisms(유기체)` 를 구성한다 </br>
-`Organisms(유기체)` 를 조합하여 `Template` 를 구성한다 </br>
-`Template` 를 조합하여 `Page` 를 구성한다 </br>
-`Page` 를 조합하여 `Web Service` 를 구성한다 </br></br>
+`Design` 상 가장 작은 단위를 `Atoms(원자)` 로 구성한다.<br/>
+`Atoms` 를 조합하여 `Molecules(분자)` 를 구성한다 <br/>
+`Molecules(분자)` 를 조합하여 `Organisms(유기체)` 를 구성한다 <br/>
+`Organisms(유기체)` 를 조합하여 `Template` 를 구성한다 <br/>
+`Template` 를 조합하여 `Page` 를 구성한다 <br/>
+`Page` 를 조합하여 `Web Service` 를 구성한다 <br/><br/>
 
 현재 우리 `Service` 는 그렇게 큰 `Service` 가 아니므로, 쪼개는 상황에서 오히려 불편이 발생할 수 있다.
 
