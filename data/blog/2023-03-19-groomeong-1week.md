@@ -69,7 +69,7 @@ summary: 'Project 진행하며 1주 동안의 회고'
 
 만들어진 `Logo` 는 다음과 같다.
 
-![Logo](/static/images/2023-03/Logo-120-120.svg)
+![Logo](/static/images/2023/03/Logo-120-120.svg)
 
 ### Primary Color 선정
 
@@ -89,19 +89,19 @@ summary: 'Project 진행하며 1주 동안의 회고'
 지정된 `Token` 은 다음과 같다.
 
 > Token / Heading
-> ![Token/Heading](/static/images/2023/03/Atoms-Heading.svg)
+> ![Token/Heading](/static/images/2023/03/Token-Heading.svg)
 
 > Token / Label
-> ![Token/Label](/static/images/2023/03/Atoms-Label.svg)
+> ![Token/Label](/static/images/2023/03/Token-Label.svg)
 
 > Token / Paragraph
-> ![Token/Paragraph](/static/images/2023/03/Atoms-Paragraph.svg)
+> ![Token/Paragraph](/static/images/2023/03/Token-Paragraph.svg)
 
 > Token / Space
-> ![Token/Space](/static/images/2023/03/Atoms-Space.svg)
+> ![Token/Space](/static/images/2023/03/Token-Space.svg)
 
 > Token / Color
-> ![Token/Color](/static/images/2023/03/Atoms-Color.svg)
+> ![Token/Color](/static/images/2023/03/Token-Color.svg)
 
 > 이렇게 만든 `Token` 은 기본적으로 이 `Service` 를 구축하는데 만들어질 가장 기본적인 틀이다.
 
