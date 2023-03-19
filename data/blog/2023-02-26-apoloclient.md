@@ -1,7 +1,7 @@
 ---
 title: 'Apollo Client Queries'
 date: '2023-02-26'
-tags: ['ApolloClient']
+tags: ['apollo-client']
 draft: false
 summary: 'Queries'
 ---

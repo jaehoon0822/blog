@@ -1,7 +1,7 @@
 ---
 title: 'ApolloClient Subscription 에 대해서'
 date: '2023-03-06'
-tags: ['ApolloClient']
+tags: ['appolo-client']
 draft: false
 summary: 'Refresh Token 처리를 위한 처리도중 알수없는 용어인 chain, link, observable' 에 대해서 알아본다.'
 ---
