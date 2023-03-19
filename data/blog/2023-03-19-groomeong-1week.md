@@ -98,10 +98,10 @@ summary: 'Project 진행하며 1주 동안의 회고'
 > ![Token/Paragraph](/public/static/images/2023-03/Token-Typography-Paragraph.svg)
 
 > Token / Space
-> ![Token/Space](/public/static/images/2023-03/Token-Space.svg)
+> ![Token/Space](/public/static/images/2023-03/Space.png)
 
 > Token / Color
-> ![Token/Color](/public/static/images/2023-03/Token-Color.svg)
+> ![Token/Color](/public/static/images/2023-03/Color.png)
 
 이렇게 만든 `Token` 은 기본적으로 이 `Service` 를 구축하는데 만들어질 가장 기본적인 틀이다.
 
