@@ -1,3 +1,11 @@
+---
+title: Groomeong 1week 회고
+date: '2023-03-19'
+tags: ['Project', 'Groomeong', 'Design', '회고']
+draft: false
+summary: 'Project 진행하며 1주 동안의 회고'
+---
+
 # Groomeong 1주차 회고
 
 > Groomeong Service </br>
