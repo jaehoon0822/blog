@@ -1,9 +1,9 @@
 ---
-title: 'Groomeong 1week 회고'
-date: '2023-03-19'
-tags: ['project', 'groomeong', 'design', '회고']
+title: 'Groomeong 2week 회고'
+date: '2023-03-30'
+tags: ['project', 'groomeong', '회고']
 draft: false
-summary: 'Project 진행하며 1주 동안의 회고'
+summary: 'Project 진행하며 2주 동안의 회고'
 ---
 
 # Groomeong 2주차 회고
