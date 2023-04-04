@@ -8,7 +8,7 @@ summary: 'Project 진행하며 3주 동안의 회고'
 
 # Groomeong 3주차 회고
 
-> 벌써 `3week` 의 회고이다. </br> `3week` 동안 프로젝트의 핵심인 지도상의 기능을 구현하게 되었다. </br>
+> 벌써 `3week` 의 회고이다. <br/> `3week` 동안 프로젝트의 핵심인 지도상의 기능을 구현하게 되었다. <br/>
 > 이를 구현하면서 느낀점을 기록해 본다.
 
 구현사항은 다음과 같았다.
@@ -125,7 +125,7 @@ export interface IPolyInfo {
 }
 ```
 
-- `Polygon` 관련 `state` 를 모아놓은것이다. </br>
+- `Polygon` 관련 `state` 를 모아놓은것이다. <br/>
   `Polygon` 은 각 지역구의 공간을 만들어주므로, 해당 지역구의 `code` 가 필요하다.
 
 - `Polygon` 을 그리기 위해서는 해당 좌표의 목록이 필요하다. 이러한 목록을 하나의 공간으로 만들어 준 `bounds` 를 저장한다.
@@ -142,10 +142,10 @@ export const getLatLngBounds = (map: IDataProps) => {
 }
 ```
 
-위처럼 `google.maps.LatLngBounds` 를 통해 만들어진 `instance` 를 사용하여, </br>
+위처럼 `google.maps.LatLngBounds` 를 통해 만들어진 `instance` 를 사용하여, <br/>
 `coord` 를 하나로 묶은 `bounds` 생성한다.
 
-이 `bounds` 는 매우 유용하게 사용되는데, </br>
+이 `bounds` 는 매우 유용하게 사용되는데, <br/>
 `polygon` 생성시 `paths` 를 통해 전달되어 공간을 그려주는 역할을 해준다.
 
 또한, `polygon` 에 `fit` 하게 좌표이동이 되도록 할때, `google.maps.Map` 에 `fitBounds` 를 사용하여 `bounds` 를 전달하면, 해당 좌표로 딱 맞게 이동된다.
@@ -154,10 +154,10 @@ export const getLatLngBounds = (map: IDataProps) => {
 
 ### `bounds` 예기치 못한상황발생
 
-> 이 부분은 조금더 `refectoring` 이 진행되어야 한다. </br>
-> 실재 `code` 구현시, 생각과는 다르게 `boudns` 값을 가져올 방도가 생각나지 않았다. </br>
+> 이 부분은 조금더 `refectoring` 이 진행되어야 한다. <br/>
+> 실재 `code` 구현시, 생각과는 다르게 `boudns` 값을 가져올 방도가 생각나지 않았다. <br/>
 
-상황은 이렇다. </br>
+상황은 이렇다. <br/>
 `search` 시 해당 검색결과를 가져옴과 동시에 `fitBounds` 를 통해 해당 지역 `Polygon` 을 받아 `bounds` 를 넘겨줄 생각이었다.
 
 하지만 예상과는 다르게, `Polygon Component` 에서 `bounds` 를 담을 `Trigger` 가 `onClick` 및 `hover` 밖에 존재하지 않았다.
@@ -182,7 +182,7 @@ export const searchState = atom<string>({
 })
 ```
 
-`searchState` 는 매우 간단하다. </br>
+`searchState` 는 매우 간단하다. <br/>
 그저, 검색 문자열을 받아, 떨어져 있는 `Component` 에서 사용가능할 수 있도록 만들어진 `state` 이다.
 
 이는 `Map Page`, `Main Page` 의 검색처리를 하기에 매우 좋은 방법이라고 생각이 들었다.
