@@ -189,7 +189,7 @@ export const searchState = atom<string>({
 
 이렇게 만들어진 `state` 들을 통해 각 `Component` 간의 연결을 사용하여 만든 것은 다음과 같다.
 
-![map gif](/images/2023/04/map.gif)
+![map gif](/static/images/2023/04/map.gif)
 
 각 지역구마다 `geoJson` 을 사용하여 각 경게를 나누어 처리했으며, 각 `state` 를 연계하여 각 컴포넌트마다 유기적으로 처리할 수 있도록 구현되었다.
 
