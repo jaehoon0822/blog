@@ -145,8 +145,22 @@ module.exports = {
 `colors key` 는 전역 색상 팔레트를 커스터마이징 할 수 있도록 해준다.
 
 ```js
+module.exports = {
+  theme: {
+    colors: {
+      transparent: 'transparent',
+      black: '#000',
+      white: '#fff',
+      gray: {
+        100: '#f7fafc',
+        // ...
+        900: '#1a202c',
+      },
 
-
+      // ...
+    }
+  }
+}
 
 ```
 
