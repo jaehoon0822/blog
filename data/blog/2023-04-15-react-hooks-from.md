@@ -353,7 +353,7 @@ const testForm = () => {
 
 이를 말해주는 부분은 `Docs` 에서 잘 보여주고 있다.
 
-![react-hook-form rerendering](/images/2023/04/re-render.gif)
+![react-hook-form rerendering](/static/images/2023/04/re-render.gif)
 
 `Controlled Component` 일때, 각 `Component` 의 움직임이 남다르다
 
