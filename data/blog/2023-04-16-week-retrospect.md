@@ -13,7 +13,7 @@ summary: '4월 2째주의 회고'
 ## Facts
 
 이번주는 주로, 내가 알고 싶어했던 여러가지 개념들을 정리하는 시간을 보낸것 같다.
-주로 많이 보았던 부분은 `twin.macro` 를 사용하여, `tailwindcss` 와 `emotion` 을   
+주로 많이 보았던 부분은 `twin.macro` 를 사용하여, `tailwindcss` 와 `emotion` 을  
 어떻게 병합하여 사용할까에 대한 고민이 많았었다.
 
 하지만, `twin.macro` 를 사용하면서, `tailwindcss` 의 `API` 습득 및 `twin.macro` 에서 제공하는 `API` 습득을 하는데 시간을 걸린것 같다.
@@ -59,11 +59,11 @@ summary: '4월 2째주의 회고'
 
 ### react-hook-form
 
-어제 `4월 15일(어제)` 에 `input` 관련 `component` 를 작성하면서, 갑자기 의문이 들었다.  
+어제 `4월 15일(어제)` 에 `input` 관련 `component` 를 작성하면서, 갑자기 의문이 들었다.
 
 `react-hook-form` 에 대한 개념을 명확하게 알고 사용은 하고 있는것인가?
 내가 왜 이 `library` 를 채택해서 사용하고 있는것이지?
-단지, `hooks` 로 빼서 `공통 컴포넌트` 를 만들기 위해서?  
+단지, `hooks` 로 빼서 `공통 컴포넌트` 를 만들기 위해서?
 
 항상, 무언가를 배울때 느낀점은 그 배경지식을 알고 접근한다면, 이후 더 수월하게 습득 가능하다는 것이다.
 
@@ -71,7 +71,7 @@ summary: '4월 2째주의 회고'
 외우기 식의 개념만 박혀 있었지, 내가 `비제어 컴포넌트` 에 대해 정확하게 이해하고 있는지 확신할 수 없었다.
 
 그렇다면, 나는 이 `react-hook-form` 에대한 개념을 머릿속에 박아 넣기 위해  
-그 개념을 알아야 했다.  
+그 개념을 알아야 했다.
 
 ## Findings
 
@@ -82,7 +82,7 @@ summary: '4월 2째주의 회고'
 덕분에, `swc` 가 얼마나 유용하며 `transpiler` 의 미래라는것도 알게되었다
 역시, `next.js` 의 `docs` 를 파면서, 개념들을 정리할 시간이 필요하다는것을 깨우치는 시간이 되기도 했다.
 
-처음부터 사용하기 위한 장벽이 생겨났지만, 어찌 저찌해서 `withTwin` 함수를 `wrapper` 로 만들어 `next.config.js` 에서 사용할 수 있도록 만들었다.  
+처음부터 사용하기 위한 장벽이 생겨났지만, 어찌 저찌해서 `withTwin` 함수를 `wrapper` 로 만들어 `next.config.js` 에서 사용할 수 있도록 만들었다.
 
 하지만, 거기서 문제가 끝나지 않았다...
 어찌된 영문인지, `tailwind.config.js` 에 설정한 값이 `twin.macro` 에 적용되지 않았다.
@@ -111,10 +111,9 @@ summary: '4월 2째주의 회고'
 
 `variants` 를 사용하는 방법이 약간 낮설어서, 이 부분을 조금더 익숙해지는것이 좋을것 같다는 생각이 든다.
 
-> `code`  는 아래와 같다
+> `code` 는 아래와 같다
 
 ```tsx
-
 import tw, { styled, TwStyle } from 'twin.macro'
 
 type ContainerVariant = 'light' | 'dark' | 'crazy'
@@ -166,7 +165,7 @@ const Component = () => (
 앞으로 `tailwindcss` 는 나의 주력 `library` 가 될것 같은 생각이 든다.
 
 또한, `tailwindcss` 를 사용하면서, `css` 에 대한 지식이 많이 부족한점을  
-계속 깨닫는다.  
+계속 깨닫는다.
 
 한가지 깨닫게 되는 부분중 하나가, `twin.macro` 를 사용하는것이 과연 괜찮은 것인가 싶다.
 

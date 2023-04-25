@@ -9,7 +9,7 @@ summary: 'tailwindcss 에 대한 환경설정 및 개념'
 # Tailwindcss 도입배경
 
 기존에 `Emotion` 을 사용하고 있었다.  
-`Emotion` 을 사용하면서 굉장히 불편했던점이, 매번 `Styling 된 Component` 를 생성하는 문제이다.  
+`Emotion` 을 사용하면서 굉장히 불편했던점이, 매번 `Styling 된 Component` 를 생성하는 문제이다.
 
 그렇게 만든 `Component` 를 가져오고, 사용하는데, 꼭 추가적인 `css` 를 추가할 일이 생긴다.
 
@@ -22,16 +22,16 @@ summary: 'tailwindcss 에 대한 환경설정 및 개념'
 ```ts
 // commons/style/index.ts
 interface ICommonProps {
-  left?: string;
-  right?: string;
-  top?: string;
-  bottom?: string;
+  left?: string
+  right?: string
+  top?: string
+  bottom?: string
 }
 
 interface IDivProps extends ICommonProps {
-  direction?: string;
-  justyfyContents?: string;
-  alignItems?: string;
+  direction?: string
+  justyfyContents?: string
+  alignItems?: string
 }
 export const Div = styled(div)<IDivProps>`
   display: flex;
@@ -39,10 +39,10 @@ export const Div = styled(div)<IDivProps>`
   padding-right: ${({ right }) => right ?? null};
   padding-top: ${({ top }) => top ?? null};
   padding-bottom: ${({ bottom }) => bottom ?? null};
-  flex-direction: ${({ direction }) => direction ?? "row"};
-  justify-content: ${({ justyfyContents }) => justyfyContents ?? "flex-start"};
-  align-items: ${({ alignItems }) => alignItems ?? "flex-start"};
-`;
+  flex-direction: ${({ direction }) => direction ?? 'row'};
+  justify-content: ${({ justyfyContents }) => justyfyContents ?? 'flex-start'};
+  align-items: ${({ alignItems }) => alignItems ?? 'flex-start'};
+`
 ```
 
 ```ts
@@ -57,18 +57,18 @@ export const Wrapper = styled(GS.Div)`
 일단 저렇게 따로 상속받아서, 많이 사용되는 속성을 처리하도록 만들었다.  
 하지만 저것역시 불완전하다.  
 `emotion` 는 `CSS in JS` 에 매우 적합하고 좋은 툴이지만, `inline` 으로  
-깔끔하게 `styling` 하고 싶기도 하다.  
+깔끔하게 `styling` 하고 싶기도 하다.
 
 > `emotion` 으로 `inline` 작성시 매우 지저분해진다...
 
 그러던 와중, `tailwindcss` 에 대해서 알게 되었고,  
 `utility-first` 라는 개념을 사용하여, `css` 사용시 `inline` 으로 작성하듯 작성하여,  
-매우 쉽게 `styling` 하는것을 볼 수 있었다.  
+매우 쉽게 `styling` 하는것을 볼 수 있었다.
 
 또한 굉장히 직관적인, `class naming` 역시 사용하기 매우 좋았다.
 `class naming` 이 정해져 있다면, 협업시 매우 효율적인 방식으로 사용가능할 것이다.
 
-거기다, `tailwindcss.config` 를 사용하여 직접 `naming` 역시 가능하다.  
+거기다, `tailwindcss.config` 를 사용하여 직접 `naming` 역시 가능하다.
 
 `Design System` 을 `tailwindcss.config` 를 사용하여 적용한다면, 손쉽게  
 `theme` 을 만들어 사용 가능할것으로 느껴졌다.
@@ -82,14 +82,14 @@ module.exports = {
   content: ['./src/**/*.{html,js}'],
   theme: {
     colors: {
-      'blue': '#1fb6ff',
-      'purple': '#7e5bef',
-      'pink': '#ff49db',
-      'orange': '#ff7849',
-      'green': '#13ce66',
-      'yellow': '#ffc82c',
+      blue: '#1fb6ff',
+      purple: '#7e5bef',
+      pink: '#ff49db',
+      orange: '#ff7849',
+      green: '#13ce66',
+      yellow: '#ffc82c',
       'gray-dark': '#273444',
-      'gray': '#8492a6',
+      gray: '#8492a6',
       'gray-light': '#d3dce6',
     },
     fontFamily: {
@@ -103,8 +103,8 @@ module.exports = {
       },
       borderRadius: {
         '4xl': '2rem',
-      }
-    }
+      },
+    },
   },
 }
 ```
@@ -134,13 +134,13 @@ module.exports = {
 module.exports = {
   theme: {
     screens: {
-      'sm': '640px',
-      'md': '768px',
-      'lg': '1024px',
-      'xl': '1280px',
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
       '2xl': '1536px',
-    }
-  }
+    },
+  },
 }
 ```
 
@@ -162,10 +162,9 @@ module.exports = {
       },
 
       // ...
-    }
-  }
+    },
+  },
 }
-
 ```
 
 `Docs` 에서는 기본값으로, 이 색상들이 `Color` 와 연관된 `Core Plugins` 에 상속된다고 한다.
@@ -178,7 +177,6 @@ module.exports = {
 이 값은 크기에 영향을 받는 `padding`, `margin`, `width`, `height`, `maxHeight`, `flex-basis`, `gap`, `inset`, `sapce`, `translate`, `scrollMargin`, `scrollPadding`, `textIndent` 같은 `Core Plugins` 에 상속된다.
 
 ```js
-
 module.exports = {
   theme: {
     spacing: {
@@ -218,9 +216,8 @@ module.exports = {
       80: '20rem',
       96: '24rem',
     },
-  }
+  },
 }
-
 ```
 
 이부분에 대한 자세한 설명은 [spacing customization documentation](https://tailwindcss.com/docs/customizing-spacing) 에서 살펴보도록 하자.
@@ -234,13 +231,13 @@ module.exports = {
 module.exports = {
   theme: {
     borderRadius: {
-      'none': '0',
-      'sm': '.125rem',
+      none: '0',
+      sm: '.125rem',
       DEFAULT: '.25rem',
-      'lg': '.5rem',
-      'full': '9999px',
+      lg: '.5rem',
+      full: '9999px',
     },
-  }
+  },
 }
 ```
 
@@ -251,11 +248,21 @@ module.exports = {
 이는 다음과 같다.
 
 ```scss
-.rounded-none { border-radius: 0 }
-.rounded-sm   { border-radius: .125rem }
-.rounded      { border-radius: .25rem }
-.rounded-lg   { border-radius: .5rem }
-.rounded-full { border-radius: 9999px }
+.rounded-none {
+  border-radius: 0;
+}
+.rounded-sm {
+  border-radius: 0.125rem;
+}
+.rounded {
+  border-radius: 0.25rem;
+}
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+.rounded-full {
+  border-radius: 9999px;
+}
 ```
 
 여기서 `DEFAULT` 는 `rounded` 이며, 각 `key` 들은 `rounded-[key]` 형태로 `class` 가 만들어진것을 볼 수 있다.
@@ -288,9 +295,9 @@ module.exports = {
       // Adds a new breakpoint in addition to the default breakpoints
       screens: {
         '3xl': '1600px',
-      }
-    }
-  }
+      },
+    },
+  },
 }
 ```
 
@@ -365,9 +372,9 @@ module.exports = {
       auto: 'auto',
       cover: 'cover',
       contain: 'contain',
-      ...theme('spacing')
-    })
-  }
+      ...theme('spacing'),
+    }),
+  },
 }
 ```
 
@@ -375,11 +382,11 @@ module.exports = {
 
 재귀적으로 작동한다고 하니, 해당 정적 값이 있다면 해당 값을 사용할 수 있다고 한다.
 
->:boom:  내가 이해한 개념이 맞다면,  
-위의 `sapcing` 은 사용자가 지정한 `spacing` 이고, `core plugins` 의 `backgroundSize` 는 `Colsuer` 가 제공하는 `theme` 을 사용하여, 사용자가 지정한 `spacing` 을 상속받는다고 이해가 된다.
+> :boom: 내가 이해한 개념이 맞다면,  
+> 위의 `sapcing` 은 사용자가 지정한 `spacing` 이고, `core plugins` 의 `backgroundSize` 는 `Colsuer` 가 제공하는 `theme` 을 사용하여, 사용자가 지정한 `spacing` 을 상속받는다고 이해가 된다.
 >
->해석하면서, 이상한 부분이 `theme 안에 다른 값을 참조해야 하는경우` 이다.
-이부분은 조금 모호해서 좀더 확인해 보아야 할 것같다.
+> 해석하면서, 이상한 부분이 `theme 안에 다른 값을 참조해야 하는경우` 이다.
+> 이부분은 조금 모호해서 좀더 확인해 보아야 할 것같다.
 
 추가적으로, 주의사항에 대해서 이야기 하는데, `section` 안의 `key` 가 아닌, `theme` 안의
 `top level key` 를 통해서만 `closure` 를 사용할 수 있다고 설명하고 있다.
@@ -389,20 +396,20 @@ module.exports = {
 module.exports = {
   theme: {
     fill: {
-      gray: ({ theme }) => theme('colors.gray')
-    }
-  }
+      gray: ({ theme }) => theme('colors.gray'),
+    },
+  },
 }
 ```
 
 ```js
-// 맞음 
+// 맞음
 module.exports = {
   theme: {
     fill: ({ theme }) => ({
-      gray: theme('colors.gray')
-    })
-  }
+      gray: theme('colors.gray'),
+    }),
+  },
 }
 ```
 
@@ -443,7 +450,7 @@ module.exports = {
 module.exports = {
   corePlugins: {
     opacity: false,
-  }
+  },
 }
 ```
 
@@ -460,7 +467,7 @@ module.exports = {
 `twin.macro` 는 `Tailwind` 와 `CSS-in-js` 를 같이 사용하도록 만들어주는 `library` 이다.
 딱, 내가 원하는 방식이다.
 
-2개의 `library` 를 하나로 만들어 처리하려면 `Twin.macro`  설정법도 같이 알아야 한다.
+2개의 `library` 를 하나로 만들어 처리하려면 `Twin.macro` 설정법도 같이 알아야 한다.
 
 ## Twin.macro 의 작동방식
 
@@ -503,29 +510,30 @@ yarn add twin.macro babel-loader babel-plugin-macros @babel/plugin-syntax-typesc
 
 ```js
 // withTwin
-const path = require("path"); // path 를 가져온다.
+const path = require('path') // path 를 가져온다.
 
 const includedDirs = [
-  path.resolve(__dirname, "components"),
-  path.resolve(__dirname, "pages"),
-  path.resolve(__dirname, "styles"),
-]; // 포함할 dir 들의 경로를 배열에 담는다.
+  path.resolve(__dirname, 'components'),
+  path.resolve(__dirname, 'pages'),
+  path.resolve(__dirname, 'styles'),
+] // 포함할 dir 들의 경로를 배열에 담는다.
 
-module.exports = function withTwin(nextConfig) { 
+module.exports = function withTwin(nextConfig) {
   // nextConfig 를 감싸서 실행시킬 wrapper 함수를 작성한다.
   return {
     ...nextConfig, // 인자로 받은 nextConfig 를 전개구문을 사용하여 할당한다.
-    webpack(config, options) { // webpack 설정을 위한 함수를 작성한다.
-                               // config 는 설정관련 부분을, options 는 nextjs 의 webpack 설정에 2번째 인자로 들어가는 Object 이다.
-                               // options object 는 다음의 properties 를 갖는다.
-                               // buildId, dev, isServer, nextRuntime, defaultLoaders, webpack
-                               // 자세한 설명은 docs 를 보도록 한다.
-      const { dev, isServer } = options; // options 에서  dev, isServer 를 구조분해할당한다.
+    webpack(config, options) {
+      // webpack 설정을 위한 함수를 작성한다.
+      // config 는 설정관련 부분을, options 는 nextjs 의 webpack 설정에 2번째 인자로 들어가는 Object 이다.
+      // options object 는 다음의 properties 를 갖는다.
+      // buildId, dev, isServer, nextRuntime, defaultLoaders, webpack
+      // 자세한 설명은 docs 를 보도록 한다.
+      const { dev, isServer } = options // options 에서  dev, isServer 를 구조분해할당한다.
       // dev 는 개발단계에서 컴파일되는지 확인하는 boolean 값이다.
       // isServer 는 client 가 아닌 server 에서 실행되는지 확인하는 boolean 값이다.
-      config.module = config.module || {};
+      config.module = config.module || {}
       // config.module 은 기존의 config.module 이 있으면 그대로 사용하고, 없으면 {} 을 사용한다.
-      config.module.rules = config.module.rules || [];
+      config.module.rules = config.module.rules || []
       // config.module.rules 은 기존의 config.module.rules 가 있으면 그대로 사용하고, 없으면 [] 을 사용한다.
       config.module.rules.push({
         // webpack rules 를 추가한다.
@@ -536,31 +544,32 @@ module.exports = function withTwin(nextConfig) {
           options.defaultLoaders.babel,
           // nextjs 에서 기본적으로 사용할 loader 를 babel 로 한다.
           {
-            loader: "babel-loader", // babel loader 를 구성한다.
+            loader: 'babel-loader', // babel loader 를 구성한다.
             options: {
               sourceMaps: dev, // dev 환경에서만 sourceMap을 사용한다.
-              presets: [ // babel preset 설정
+              presets: [
+                // babel preset 설정
                 [
-                  "@babel/preset-react", 
-                  { runtime: "automatic", importSource: "@emotion/react" },
+                  '@babel/preset-react',
+                  { runtime: 'automatic', importSource: '@emotion/react' },
                   // runtime 으로 automatic 을 사용한다.
                   // automatic 은 React New JSX transfrom 을 통해 자동적으로 JSX 를 변환시켜주는 기능이다
                   // 이는 `import React from 'react'` 구문을 생략해도 되고,
                   // 기존의 `React.createElement` 방식을 `import {jsx as _jsx} from 'react/jsx-runtime'`
                   // 으로 변경하면서, build 시점에 자동적으로 주입시켜주는 방식으로 변경되었다.
-                  
-                  // JSX 컴파일러를 @emotion/react 의 JSX 컴파일러로 변경한다. 
-                  // emotion 내부의 JSX 는 props 로 `css`가 포함되면, emotionElement 를 포함한 
+
+                  // JSX 컴파일러를 @emotion/react 의 JSX 컴파일러로 변경한다.
+                  // emotion 내부의 JSX 는 props 로 `css`가 포함되면, emotionElement 를 포함한
                   // JSX 로 변경하지만, 그렇지 않다면 기본 JSX 컴파일러를 사용한다.
                 ],
               ],
               plugins: [
-                require.resolve("babel-plugin-macros"),
+                require.resolve('babel-plugin-macros'),
                 // plugins 로 bable-plugin-macros 를 사용한다.
-                require.resolve("@emotion/babel-plugin"),
+                require.resolve('@emotion/babel-plugin'),
                 // emotion babel plugin 을 사용한다.
                 [
-                  require.resolve("@babel/plugin-syntax-typescript"),
+                  require.resolve('@babel/plugin-syntax-typescript'),
                   // typescript plugin 을 설정한다.
                   { isTSX: true }, // TSX 를 true 로 설정
                 ],
@@ -568,37 +577,38 @@ module.exports = function withTwin(nextConfig) {
             },
           },
         ],
-      });
+      })
 
-      if (!isServer) { // server 에서 동작하지 않을때,
+      if (!isServer) {
+        // server 에서 동작하지 않을때,
         config.resolve.fallback = {
-          ...(config.resolve.fallback || {}),  
+          ...(config.resolve.fallback || {}),
           // 모듈 resolve 가 실패하면 polyfill 실행할 수 있도록 모아놓은 Object 이다.
           // 해당 Object 가 있다면 사용하고, 없으면 {} 을 사용한다.
 
           // webpack5 에서는 더 이상 Node.js 핵심 모듈을 자동으로 폴리필하지 않는다.
           // 그러므로, client 에서는 Node.js 에서 사용하는 module 사용이 불가하다.
-          // 만약 원한다면, npm 에서 호환되는 모듈을 설치해야 하지만,  
+          // 만약 원한다면, npm 에서 호환되는 모듈을 설치해야 하지만,
           // 현 설정에서는 필요 없는듯하다.
           fs: false,
           module: false,
           path: false,
           os: false,
           crypto: false,
-        };
+        }
       }
 
-      if (typeof nextConfig.webpack === "function") {
+      if (typeof nextConfig.webpack === 'function') {
         // 만약 function 으로 config 가 되어 있다면,,
-        return nextConfig.webpack(config, options);
+        return nextConfig.webpack(config, options)
         // 설정한 config 와 options 를 인자값으로 넘겨준다
       } else {
-        return config;
+        return config
         // 아니면 config 를 반환한다.
       }
     },
-  };
-};
+  }
+}
 ```
 
 > 나중에 시간되면 `webpack` 은 다시한번 살펴봐야 겠다.
@@ -608,22 +618,22 @@ module.exports = function withTwin(nextConfig) {
 ```js
 // next.config.js
 
-const withTwin = require("./withTwin");
+const withTwin = require('./withTwin')
 
-const nextConfig = withTwin({ // <<- `withTwin` 함수 적용
+const nextConfig = withTwin({
+  // <<- `withTwin` 함수 적용
   reactStrictMode: true,
   swcMinify: true, // terser 대신 swc 의 minification 을 사용한다.
   // docs 에서는 Terser 보다 7배 더 빠르다고 소개하고 있다.
-});
+})
 
-module.exports = nextConfig;
-
+module.exports = nextConfig
 ```
 
 ## 마무리
 
 해당 블로그에서 굉장히 친절하게 설명 되어 있으며, 참고한 `reference` 들도 같이 제공하고 있다.
-이제 이러한 설정을 기반으로 `setting` 해보면서, `tailwindcss`  `docs` 와 함께 적용해 보려 한다.
+이제 이러한 설정을 기반으로 `setting` 해보면서, `tailwindcss` `docs` 와 함께 적용해 보려 한다.
 
 이후 추가적인 사항이 생긴다면 더 적을 예정이다.
 이쪽 세계를 알면 알수록 재미있으면서, 알아야 할것들이 많구나!

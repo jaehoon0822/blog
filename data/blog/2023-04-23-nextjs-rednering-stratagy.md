@@ -9,7 +9,7 @@ summary: 'nextjs 의 렌더링'
 # nextjs 의 렌더링 전략
 
 > next.js 를 사용하고 있지만, 개념에 대한 정리를 하는것이 좋을 듯 싶다.  
-아직 알아야 할 것들이 많아 렌더링 전략에 대해서 자세히 알아본다.
+> 아직 알아야 할 것들이 많아 렌더링 전략에 대해서 자세히 알아본다.
 
 `nextjs` 는 다른 `react`로 만들어진 `framework` 와는 다르게, `static page` 가 아닌 `dynamic page`를 제공한다.
 
@@ -23,7 +23,7 @@ summary: 'nextjs 의 렌더링'
 
 ## SSR(ServerSideRendering)
 
-서버측에서 `html` 페이지를 만들어서 `client` 로 보내주는 방식을 `server side rendering` 이라고 불린다. 
+서버측에서 `html` 페이지를 만들어서 `client` 로 보내주는 방식을 `server side rendering` 이라고 불린다.
 
 `nextjs` 에서도 이러한 기능을 제공하는데, 이러한 기능을 왜 제공하는지 알아야 한다.
 
@@ -39,7 +39,7 @@ summary: 'nextjs 의 렌더링'
 그러므로, `server` 에서 모든 자원을 받을 필요 없어 비용을 절감할 수 있으며, `client` 측의 남는 자원을 사용하여 작동하므로, 더 빠르고 좋은 서비스를 제공할 수 있다
 
 `SPA` 가 급발전하게 된것도 바로 이 부분이다.
-하지만, 이러한 `SPA`도 반드시 `Server` 를 통해 렌더링된 페이지를 받아야만 하는 경우가 생긴다. 
+하지만, 이러한 `SPA`도 반드시 `Server` 를 통해 렌더링된 페이지를 받아야만 하는 경우가 생긴다.
 
 이는 데이터 검증 및 주요 API 등 `Server` 에서만 처리하는 것들과 함께, `SEO` 에도 영향을 끼치기 때문이다.
 
@@ -53,7 +53,7 @@ summary: 'nextjs 의 렌더링'
 앞써서, `SPA` 는 `javascript` 를 통해 `page` 를 그린다고 하였다
 바로 이부분이 문제이다.
 
-`SPA` 만 제공한다고 가정하면,  `Server` 로 부터 `HTML`을 받지만, `비어있는 HTML` 을 받을 것이고, 이후 `Javascript` 를 받은 이후에, `HTML` 의 화면을 그려준다.
+`SPA` 만 제공한다고 가정하면, `Server` 로 부터 `HTML`을 받지만, `비어있는 HTML` 을 받을 것이고, 이후 `Javascript` 를 받은 이후에, `HTML` 의 화면을 그려준다.
 
 즉, `Bot`이 `비어있는 HTML`을 이해하게된다는 것이다.
 그러므로, `SEO` 는 당연 점수가 낮을수 밖에 없다.
@@ -126,14 +126,14 @@ const Page(props: IData}) {
 이때 `getServerSideProps` 에서 반환하는 `props` 는 해당 `page component` 에 `props` 인자로 전달한다.
 
 이렇게 받은 `props` 인자는 `page component` 에서 사용가능하다.
- `SSR` 을 이런식으로 지원하며, `Server` 를 통해 받은 `data`를 동적으로 받아 `HTML` 을 `redering` 해 보내준다.
+`SSR` 을 이런식으로 지원하며, `Server` 를 통해 받은 `data`를 동적으로 받아 `HTML` 을 `redering` 해 보내준다.
 
 > `SSR` 을 사용하여 `page` 처리할때(`getServerSideProps`안에서...), `clinet` 에서 사용하는 `API`는 사용 불가능하다. (ex: window, DOM)
 
 ## CSR(ClientSideRendering)
 
 `CSR` 은 필요한 기본 `script` 및 `css`, 기본 `HTML` 마크업만 전송하기에, 비어있는 `page` 를 제공한다.
-이렇게 비어있는 `page` 안에는  `root div` 가 존재하는데, 이 `root div`에 해당 `page` 내용을 그려준다.
+이렇게 비어있는 `page` 안에는 `root div` 가 존재하는데, 이 `root div`에 해당 `page` 내용을 그려준다.
 
 이로 인해, 새로고침없이 다른 페이지로 이동 가능하다.(`page` 내용을 그려준다.)
 
@@ -173,7 +173,7 @@ const Page = () => {
 
 ```
 
-이렇게, `import` 할 `module` 을 가져오면서, 옵션으로 `ssr: false`  를 주면, 마치 `useEffect` 및 `typeof window === 'undefined'` 를 통해 `client` 인지 확인한것 처럼 동작하는것 처럼, 사용가능하다
+이렇게, `import` 할 `module` 을 가져오면서, 옵션으로 `ssr: false` 를 주면, 마치 `useEffect` 및 `typeof window === 'undefined'` 를 통해 `client` 인지 확인한것 처럼 동작하는것 처럼, 사용가능하다
 
 즉, `rendering` 된 이후 `CSR` 에서 작동하도록 만들어준다.
 `CSR` 은 검색엔진에 노출 될 필요없는 페이지를 만드는 경우에 매우 좋다.
@@ -202,7 +202,7 @@ const Page = () => {
 
 즉, `getStaticProps` 를 다시 호출하려면 다시 `re-build` 해야한다. 딱 봐도 불편해보인다.
 
-이러한 부분을 처리하기  위해 `revalidate` 라는 `option` 을 제공한다.
+이러한 부분을 처리하기 위해 `revalidate` 라는 `option` 을 제공한다.
 
 `revalidate` 는 주기를 지정해서, 언제 `re-build` 할지 정할 수 있다.
 값은 숫자를 사용하여 지정가능하다
