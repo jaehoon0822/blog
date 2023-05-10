@@ -90,11 +90,12 @@ export const BlogSEO = ({
       : typeof images === 'string'
       ? [images]
       : images
-
+  console.log('arr', imagesArr)
   const featuredImages = imagesArr.map((img) => {
+    console.log('img', img)
     return {
       '@type': 'ImageObject',
-      url: img.includes('http') ? img : siteMetadata.siteUrl + img,
+      url: img && img.includes('http') ? img : siteMetadata.siteUrl + img,
     }
   })
 
