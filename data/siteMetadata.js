@@ -12,7 +12,7 @@ const siteMetadata = {
   // socialBanner: '/static/images/twitter-card.png',
   email: 'jaehoon0822@gmail.com',
   github: 'https://github.com/jaehoon0822',
-  // twitter: 'https://twitter.com/Twitter',
+  twitter: 'https://twitter.com/Twitter',
   // facebook: 'https://facebook.com',
   // youtube: 'https://youtube.com',
   // linkedin: 'https://www.linkedin.com',
