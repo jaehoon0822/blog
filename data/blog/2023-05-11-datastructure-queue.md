@@ -1,7 +1,7 @@
 ---
-title: '자료구조 Stack 에 대해서'
-date: '2023-05-09'
-tags: ['자료구조', 'stack', '스택']
+title: '자료구조 queue 에 대해서'
+date: '2023-05-11'
+tags: ['queue', '자료구조', '큐']
 draft: false
 summary: '자료구조 Stack'
 ---
