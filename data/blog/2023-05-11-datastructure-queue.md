@@ -3,7 +3,7 @@ title: '자료구조 queue 에 대해서'
 date: '2023-05-11'
 tags: ['queue', '자료구조', '큐']
 draft: false
-summary: '자료구조 Stack'
+summary: '자료구조 queue'
 ---
 
 # Queue 를 구현해보자
