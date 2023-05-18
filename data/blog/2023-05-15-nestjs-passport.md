@@ -544,7 +544,7 @@ new JwtStrategy(options, verify)
 | name | description |
 | :--- | :--- |
 | secretOrKey | 이는 `token signature` 를 검증하기 위한 `string` 혹은 `buffer` 를 포함한 <br/>`secret`(대칭되는) 혹은 `PEM-encoded public key` 이다.<br/>`secertOrKeyProvider` 가 제공되지 않는한 필수값이다.  
-| secretOrKeyProvider | 이는 `secretOrKeyProvider(request, rawJwtToken, done)` 으로 된 `callback` 함수이다.</br>이 함수는 주어진 키와 요청 조합에 대한 `secret` 혹은 `PEM-encoded public key` 로 `done` 을 호출해야 한다.</br>`done` 은 `done(err, secret)` 의 포멧을 갖는다. <br/>추가적으로 `rowJwtToken` 을 `decoding` 하는것은 구현자에게 달려있다.<br/>`secretOrKey` 가 없다면 필수적으로 제공되어야 한다.
+| secretOrKeyProvider | 이는 `secretOrKeyProvider(request, rawJwtToken, done)` 으로 된 `callback` 함수이다.<br/>이 함수는 주어진 키와 요청 조합에 대한 `secret` 혹은 `PEM-encoded public key` 로 `done` 을 호출해야 한다.</br>`done` 은 `done(err, secret)` 의 포멧을 갖는다. <br/>추가적으로 `rowJwtToken` 을 `decoding` 하는것은 구현자에게 달려있다.<br/>`secretOrKey` 가 없다면 필수적으로 제공되어야 한다.
 | jwtFromRequest | 이 옵션은 필수값이다. 이 함수는 `request` 를 인수로써 받아들이고,<br/> 인코딩된 `JWT` 문자열 혹은 `null` 을 반환한다. <br/> 이부분은 추후 설명할 `Extracting the JWT from the request` 에서 확인해보도록 한다.
 | issuer | 만약 정의된다면 `iss(claim)` 에 이 값이 정의된다 |
 | audience | 만약 정의된다면, `aud(claim)` 에 이 값이 정의된다 |
