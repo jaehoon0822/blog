@@ -1758,11 +1758,35 @@ export class JwtAuthGuard extends AuthGuard('jwt') {}
 
 `Guard` 는 이러한 방식을 구현해줌과 동시에, 중간에서 `canActivate` 함수를 실행시켜, `Strategy` 에서 반환된 값이 없거나 `error` 가 발생하면, 더이상 진행되지 않도록 막아주는 효과도 같이 병행해준다.
 
-이제 이러한 모든 로직이 어떻게 동작하는지 그 흐름을 이해하게 되었다.
+그리고 그 `Gaurd` 를 사용하는 로직이다.
 
-`nestjs` 를 공부하면서 `nestjs/passport` 가 대체 어떠한 흐름으로 구성되는지, 그 연결점을 알기가 어려웠다.
+```ts
+import { Controller, Get, Request, Post, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { LocalAuthGuard } from './auth/local-auth.guard';
+import { AuthService } from './auth/auth.service';
 
-하지만, `code` 와 함께 그 흐름을 분석하면서 알아가다 보니, 모든 코드를 완벽하게 이해했다고 말하기는 어렵지만, `passport` 를 어떻게 `wrapping` 하고, `nestjs` 에 맞도록 만들었는지 알게된 귀중한 시간이었던것 같다.
+@Controller()
+export class AppController {
+  constructor(private authService: AuthService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
+  }
+}
+```
+
+`/profile` 경로에서, `@UseGuards` 데커레이터를 사용하고, `JwtAuthGuard` 를 사용하도록 한다.
+
+이로인해, `user` 를 반환하지 못한다면, 통과되지 않고 `UnauthorizedException` 을 발생시키고, 그에 맞는 `Error` 값을 보내게 될것이다.
+
+만약, `user` 가 존재한다면, `request.user` 객체에 해당 `user data` 를 넣어주고, `getProfile` 을 실행시킨다.
+
+내부 로직을 모를때는 어떠한 연관관계에서 처리 되었는지 몰랐지만, 이제는 그 흐름이 이해가 간다.
+
+`code` 와 함께 그 흐름을 분석하면서 알아가다 보니, 모든 코드를 완벽하게 이해했다고 말하기는 어렵지만, `passport` 를 어떻게 `wrapping` 하고, `nestjs` 에 맞도록 만들었는지 알게된 귀중한 시간이었던것 같다.
 
 > 물론, 이렇게 코드분석하고 찾아보고 하나하나 알아보기까지 시간이 조금 걸려서 진도가 늦어진부분이 없지 않아 있다...ㅠㅠ
 >
