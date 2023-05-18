@@ -666,11 +666,113 @@ app.post('/profile', passport.authenticate('jwt', { session: false }),
 이렇게, `req` 객체의 `user` 프로퍼티에서 `jwt` 토큰을 `deconding` 한 `payload` 참조가 가능하게 된다.
 이렇게, `passport-jwt` 가 어떻게 작동하는지를 살펴보았다.
 
+## 드디어, nestjs/passport 에 대해서 살펴보자!!
+
+지금까지 `nestjs/passport` 를 살펴보기전 개념적 부분에 대해서 대략적으로 알아보았다
+
 이제, `nextjs/passport` 를 살펴보도록 하자.
 `nestjs` 의 `docs` 에서는 `passport` 사용시 `nestjs/passport` 를 사용하라고 한다.
 이는 `passport` 를 `nestjs` 에서 사용가능하도록 만든 `library` 로써 사용된다.
 
-내부적으로 `module` 은 다음처럼 구성되어 있다.
+처음으로 `passport` 를 사용하기 위한 `dynamicModule` 을 보도록 한다
+
+### PassportModule
+
+일단 Module 의 내부를 살펴보기 이전에 `nestjs/common` 에서 가져오는 `Type` 에 대해서 살펴보도록 한다.  
+
+> `@nestjs/common` 의 `Type`
+```ts
+// nestjs/common 의 Type 
+export interface Type<T = any> extends Function {
+  new (...args: any[]): T;
+}
+```
+
+위의 `Type` 인터페이스는 `new (...args: any[]): T` 를 가진구조를 가지고 있다.
+이때 `T` 는 `Generic` 을 통해 받은 `T` 를 사용하여, 반환값을 설정해주는 구조로,  
+이루어져 있다.
+
+`new (...args: any[]): T` 부분은 `Constructor Signature` 로, 생성자를 가진 함수를 뜻한다.
+
+> `Javascript` 는 `Prototype based Langauge` 라서, 함수내부에 `Constructor Function` 이 존재한다.  
+> `new` 연산자와 이 `Constructor` 를 통해, 객체를 생성한다.
+> 그래서 `new (...args: any[]): T` 는 `Constructor` 를 나타내는 `Signature` 를 나타낸다
+
+즉, `T` 값을 반환하는 `Constructor` 임을 나타내는 함수(`Class 라고 봐도 된다.`) 를 나타낸다
+이는 다음처럼 사용가능하다.
+
+```ts
+class MyClass {
+  constructor(public name: string) {}
+}
+
+// Type<T>를 사용하여 MyClass의 타입을 지정
+const myClassType: Type<MyClass> = MyClass;
+
+// Type<T>로 생성된 타입을 사용하여 객체 인스턴스를 생성
+const myInstance: MyClass = new myClassType('example');
+
+// 객체 인스턴스의 프로퍼티에 접근
+console.log(myInstance.name); // 출력: "example"
+```
+
+이렇게, 클래스로 부터 생성된 객체 인스턴스를 다룰수 있도록 만들어준다.
+ `PassprotModule` 부분은 이러한 `Type` 을 사용하는 몇개의 코드가 보이므로 참고하도록 한다. 
+
+또한 `ModuleMetadata` 를 가져와 사용하기도 한다.
+이 부분은 `Module` 을 구성하는 `Interface` 로써, 사용되므로 코드자체는 그렇게 어렵지는 않을 것이다.
+
+> `@nestjs/common` 의 `ModuleMetadata`
+```ts
+import { Abstract } from '../abstract.interface';
+import { Type } from '../type.interface';
+import { DynamicModule } from './dynamic-module.interface';
+import { ForwardReference } from './forward-reference.interface';
+import { Provider } from './provider.interface';
+
+/**
+ * Interface defining the property object that describes the module.
+ *
+ * @see [Modules](https://docs.nestjs.com/modules)
+ *
+ * @publicApi
+ */
+export interface ModuleMetadata {
+  /**
+   * Optional list of imported modules that export the providers which are
+   * required in this module.
+   */
+  imports?: Array<
+    Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
+  >;
+  /**
+   * Optional list of controllers defined in this module which have to be
+   * instantiated.
+   */
+  controllers?: Type<any>[];
+  /**
+   * Optional list of providers that will be instantiated by the Nest injector
+   * and that may be shared at least across this module.
+   */
+  providers?: Provider[];
+  /**
+   * Optional list of the subset of providers that are provided by this module
+   * and should be available in other modules which import this module.
+   */
+  exports?: Array<
+    | DynamicModule
+    | Promise<DynamicModule>
+    | string
+    | symbol
+    | Provider
+    | ForwardReference
+    | Abstract<any>
+    | Function
+  >;
+}
+```
+
+`passportModule` 에서 사용하는 `options` 인터페이스를 살펴보도록 한다.
 
 ```ts
 
@@ -678,33 +780,47 @@ app.post('/profile', passport.authenticate('jwt', { session: false }),
 import { ModuleMetadata, Type } from '@nestjs/common';
 
 export interface IAuthModuleOptions<T = any> {
-  defaultStrategy?: string | string[];
-  session?: boolean;
-  property?: string;
-  [key: string]: any;
+  defaultStrategy?: string | string[]; // 사용될 기본 Strategy 
+  session?: boolean; // session 을 사용할지 안할지 boolean 값
+  property?: string; // request 객체에 저장될 property name 지정
+  [key: string]: any; // 그 외...
 }
 
 export interface AuthOptionsFactory {
   createAuthOptions(): Promise<IAuthModuleOptions> | IAuthModuleOptions;
-}
+} // createAuthOptions 함수를 가진 인터페이스로 반환값은 IAuthModuleOptions 이다.
 
 export interface AuthModuleAsyncOptions
   extends Pick<ModuleMetadata, 'imports'> {
+    // 다른 모듈을 확장할 수 있도록
+    // ModuleMetadata 중 imports 를 가져와 확장시킨다.
+    // 밑은 나머지 추가적인 함수들이다.
+  
   useExisting?: Type<AuthOptionsFactory>;
+  // 기존에 존재하는 `AuthOptionsFactory` 클래스 타입을 사용하여 옵션을 생성 
   useClass?: Type<AuthOptionsFactory>;
+  // 새로운 `AuthOptionsFactory` 클래스 타입을 생성하여 옵션을 생성
   useFactory?: (
     ...args: any[]
   ) => Promise<IAuthModuleOptions> | IAuthModuleOptions;
+  // factory 함수를 사용하여 옵션을 생성
+  // factory 함수는 paramter 를 받아 `IAuthModuleOptions` 을 생성한다.
   inject?: any[];
+  // 의존성 주입을 위한 token 배열
+  // 이 주입된 token 을 사용하여 위의 클래스 생성자에서 받아 처리 가능하다
 }
 
 export class AuthModuleOptions implements IAuthModuleOptions {
   defaultStrategy?: string | string[];
   session?: boolean;
   property?: string;
-}
+} // IAuthModuleOptions 을 구현한 클래스
 
 ```
+
+위는 `dynamic Module` 의 `options` 들을, 동적으로 생성해주는 코드라고 이해하면 될듯하다.
+이때, 위의 `options` 를 준수하여 `module` 을 생성하는것은 매우 중요하다.
+실제 위 `options` 들을 `passport module` 에서 가져와서 사용하는것을 볼 수 있다.
 
 ```ts
 // passport.module.ts
@@ -824,14 +940,833 @@ import { jwtConstants } from './constants';
 export class AuthModule {}
 ```
 
-모듈을 가져오는 것을 볼 수 있다.
-이때, 사실 모듈의 `register` 를 사용하지 않았으므로, 빈 객체를 반환하지 않을까 싶다.
-굳이 `module` 을 가져와서 사용하는 의미가 있나 싶을 정도이다.
+모듈을 가져오는 것을 볼 수 있다.  
 
-하지만, 일단 `docs` 에서는 `AuthModule` 을 사용하여 `Passport` 기능을 설정할 필요가 있어서 반드시 정의되어야 한다 말한다.
+`docs` 에서는 `AuthModule` 을 사용하여 `Passport` 기능을 설정할 필요가 있어서 반드시 정의되어야 한다 말한다.
 
-여기서, 단순히 `PassportModule` 로 `import` 를 했는데, 내가 이해한것이 맞다면, `register` 를 호출하지 않으면, 자동적으로 `register` 를 호출하는것과 같다고 이야기한다.
+여기서, 단순히 `PassportModule` 로 `import` 를 했는데, 내가 이해한것이 맞다면, `register` 를 호출하지 않으면, 자동적으로 `register` 를 호출한다.
 
-이렇게 `PassportModule` 을 입력해야만 `passport` 초기화 및 `middleware` 등록이 가능하도록 처리가 이루어진다.
+이후, `Strategy` 들을 설정하는 로직이 실행된다.
 
+`nestjs/passport` 의 내부 로직중, 따로 `options` 설정이 되어 있지 않다면, 
+`default options` 이 지정되어 있는데 다음과 같다.
 
+```ts
+// passport/lib/options.ts
+
+export const defaultOptions = {
+  session: false,
+  property: 'user'
+};
+
+```
+
+보면 알겠지만, `session` 사용은 `default` 로 `false` 처리 되어 있으며,
+`property` 값은 기본적으로 `user` 로 되어 있으므로, `request` 객체를 통해  
+`user` 정보를 가져올때, `request.user` 로 접근해야함을 말한다.
+
+자 그럼, 이렇게 `DynamicModule` 을 통해, `PassportModule` 을 만들어내는것을 알게 되었다.
+그렇다면, `Passport Strategy` 는 어떻게 사용할지 살펴본다. 
+
+### nestjs/Passport Strategy 
+
+`Docs` 에서는 다음처럼 `Strategy` 를 등록하라고 명시되어 있다.
+
+```ts
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { PassportStrategy } from '@nestjs/passport';
+import { Injectable } from '@nestjs/common';
+import { jwtConstants } from './constants';
+
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor() {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: jwtConstants.secret,
+    });
+  }
+
+  async validate(payload: any) {
+    return { userId: payload.sub, username: payload.username };
+  }
+}
+```
+
+사실 이부분만 보더라도, `Logic` 자체가 쉽게 이해가는 로직은 아니다.
+단순히 추상적으로 생각하자면 `PassportStrategy` 를 `@nestjs/passport` 에서 가져온후,  
+`class` 로 확장하면 알아서 처리해주는구나.
+
+라고 생각하고 사용하면 편하지만, 이해없이 사용하면 이 자체를 그냥 외워서 사용하는것 밖에 되지 않는다.  
+
+지금 당장은 모면할 수 있더라도 장기적으로 보면 좋은 방식은 아니다.
+일단 `PassportStrategy` 가 어떻게 이루어져 있는지 먼저 살펴보도록 한다.
+
+```ts
+// passport/lib/passport/passport.strategy.ts
+import * as passport from 'passport';
+import { Type } from '../interfaces';
+
+export function PassportStrategy<T extends Type<any> = any>(
+  Strategy: T,
+  name?: string | undefined
+): {
+  new (...args): InstanceType<T>;
+} {
+  abstract class MixinStrategy extends Strategy {
+    abstract validate(...args: any[]): any;
+
+    constructor(...args: any[]) {
+      const callback = async (...params: any[]) => {
+        const done = params[params.length - 1];
+        try {
+          const validateResult = await this.validate(...params);
+          if (Array.isArray(validateResult)) {
+            done(null, ...validateResult);
+          } else {
+            done(null, validateResult);
+          }
+        } catch (err) {
+          done(err, null);
+        }
+      };
+      /**
+       * Commented out due to the regression it introduced
+       * Read more here: https://github.com/nestjs/passport/issues/446
+        const validate = new.target?.prototype?.validate;
+        if (validate) {
+          Object.defineProperty(callback, 'length', {
+            value: validate.length + 1
+          });
+        }
+      */
+      super(...args, callback);
+
+      const passportInstance = this.getPassportInstance();
+      if (name) {
+        passportInstance.use(name, this as any);
+      } else {
+        passportInstance.use(this as any);
+      }
+    }
+
+    getPassportInstance() {
+      return passport;
+    }
+  }
+  return MixinStrategy;
+}
+```
+
+`PassportStrategy` 는 위와 같은 형태를 띄고 있다.
+여기서 눈여겨 볼것은, 해당 함수의 `Strategy: T,  name?: string | undefined`   
+부분과 `{ new (...args): InstanceType<T>; }` 부분이다.
+
+`Staregy` 를 받고, `name` 값도 지정가능하지만 선택적 인자이다.
+
+```ts
+export function PassportStrategy<T extends Type<any> = any>(
+  Strategy: T, // <-- 이부분
+  name?: string | undefined
+): {
+  new (...args): InstanceType<T>;
+} { ... }
+```
+
+이 `Strategy class` 를 반환하는 생성자를 가진 `Class` 를 반환하는 로직이다.
+```ts
+export function PassportStrategy<T extends Type<any> = any>(
+  Strategy: T, 
+  name?: string | undefined
+): {
+  new (...args): InstanceType<T>; // <-- 이부분
+} { ... }
+```
+
+이는 `Strategy` 를 인자로 받는 다음의 코드에서 볼수 있다.
+
+```ts
+
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { PassportStrategy } from '@nestjs/passport';
+import { Injectable } from '@nestjs/common';
+import { jwtConstants } from './constants';
+
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy) {...}
+```
+
+앞전의 `JwtStrategy` 전략을 만들때의 코드이다.
+여기서 `Strategy` 를 인자값으로 넘겨서 처리하는것을 볼 수 있다. 
+
+이때 넘겨진 `Strategy` 는 `Passport-jwt` 에서 넘겨주는 `jwt` 를 기반으로하는 `Strategy` 이다. 
+이러한 타입만을 살펴보면 내용은 간단하다.
+
+> 반환타입은 해당 `Strategy` 의 `class` 의 인스턴스 타입을 반환하는 생성자를 뜻한다.
+
+그래서 이러한 `class` 인스턴스 타입을 반환하는 `abstract class` 를 구현한다.
+
+```ts
+
+import * as passport from 'passport';
+import { Type } from '../interfaces';
+
+export function PassportStrategy<T extends Type<any> = any>(
+  Strategy: T,
+  name?: string | undefined
+): {
+  new (...args): InstanceType<T>;
+} {
+  abstract class MixinStrategy extends Strategy {
+    ...
+  }
+  return MixinStrategy;
+}
+```
+
+이렇게 `MixinStrategy` 를 `Strategy`로 확장한 `추상 Class` 를 만들고, 내용을 구현한다.
+첫번째로 `getPassportInstance` 메서드를 만들어서, `import` 한 `passport` 를 반환하는 메서드먼저 살펴본다.
+
+```ts
+import * as passport from 'passport';
+import { Type } from '../interfaces';
+
+export function PassportStrategy<T extends Type<any> = any>(
+  Strategy: T,
+  name?: string | undefined
+): {
+  new (...args): InstanceType<T>;
+} {
+  abstract class MixinStrategy extends Strategy {
+    ...
+
+    getPassportInstance() {
+      return passport
+    }
+  }
+  return MixinStrategy;
+}
+```
+
+이렇게 구성되어 있는데, 아직 `OOP` 에 대한 지식이 많이 부족한듯 보인다.
+굳이, 이렇게 따로 메서드를 만들면서 처리하는 이유가 존재할것인데 쉽게 와 닿지는 않는다.
+
+이런방식으로 구현하는 부분은 외부에서 주입받지 않고 내부에서 사용하도록 처리하기 위함인듯 싶다.
+이로인해 모듈 내부에 대한 결합도를 낮추어서 사용하는건가 싶기도 하다.
+아니면 다른 이유가 있는것인가?
+
+아직은 이부분에 대해 명확히 이해가 가지는 않는 상황이다.
+
+그리고 이 `getPassportInstance` 를 사용하여 `passport` 를 사용하는 로직은 `constructor` 에서 사용한다.
+
+```ts
+mport * as passport from 'passport';
+import { Type } from '../interfaces';
+
+export function PassportStrategy<T extends Type<any> = any>(
+  Strategy: T,
+  name?: string | undefined
+): {
+  new (...args): InstanceType<T>;
+} {
+  abstract class MixinStrategy extends Strategy {
+    abstract validate(...args: any[]): any;
+
+    constructor(...args: any[]) {
+      const callback = async (...params: any[]) => {
+        const done = params[params.length - 1];
+        try {
+          const validateResult = await this.validate(...params);
+          if (Array.isArray(validateResult)) {
+            done(null, ...validateResult);
+          } else {
+            done(null, validateResult);
+          }
+        } catch (err) {
+          done(err, null);
+        }
+      };
+      /**
+       * Commented out due to the regression it introduced
+       * Read more here: https://github.com/nestjs/passport/issues/446
+        const validate = new.target?.prototype?.validate;
+        if (validate) {
+          Object.defineProperty(callback, 'length', {
+            value: validate.length + 1
+          });
+        }
+      */
+      super(...args, callback);
+
+      const passportInstance = this.getPassportInstance();
+      if (name) {
+        passportInstance.use(name, this as any);
+      } else {
+        passportInstance.use(this as any);
+      }
+    }
+
+    getPassportInstance() {
+      return passport;
+    }
+  }
+  return MixinStrategy;
+}
+```
+
+이렇게 보면 복잡하니, `constructor` 부분만 따로 빼서 살펴본다.
+
+```ts
+
+    constructor(...args: any[]) {
+      const callback = async (...params: any[]) => {
+        const done = params[params.length - 1];
+        try {
+          const validateResult = await this.validate(...params);
+          if (Array.isArray(validateResult)) {
+            done(null, ...validateResult);
+          } else {
+            done(null, validateResult);
+          }
+        } catch (err) {
+          done(err, null);
+        }
+      };
+      super(...args, callback);
+
+      const passportInstance = this.getPassportInstance();
+      if (name) {
+        passportInstance.use(name, this as any);
+      } else {
+        passportInstance.use(this as any);
+      }
+    }
+```
+
+로직 자체만 보면 간단하게 구성되어 있다.
+`passport` 의 `Stragy` 에 사용될 `callback` 은 가장 마지막의 인자로 `done` 함수를 받는다.
+이러한 `done` 함수는 `verify` 함수에서 전달한 값을, `request.user` 에 담아주는 역할을 한다. 
+이부분은 앞전의 `Passport` 관련 내용을 참고하도록 한다.
+
+그러므로, 이러한 `done` 을 유동적으로 사용하기위해, 변수로 선언한후, `parameter` 의 가장 마지막 값을 할당한다.  
+
+이후, `this.validate(...params)` 를 실행하는데,  
+
+```ts
+mport * as passport from 'passport';
+import { Type } from '../interfaces';
+
+export function PassportStrategy<T extends Type<any> = any>(
+  Strategy: T,
+  name?: string | undefined
+): {
+  new (...args): InstanceType<T>;
+} {
+  abstract class MixinStrategy extends Strategy {
+    abstract validate(...args: any[]): any; // <-- 여기
+
+    constructor(...args: any[]) {
+      ...
+    }
+
+    getPassportInstance() {
+      return passport;
+    }
+  }
+  return MixinStrategy;
+}
+```
+
+`this.validate` 는 `abstract method` 로 만들어, 실제 `Class` 구현시 해당 `Strategy` 에 맞도록 구현하도록 한다.
+
+이렇게 잘 실행된 `this.validate` 함수는 그 결과값을 내보내는데, 그 결과를 `validateResult` 변수에 담고, `done` 을통해 처리하도록 한다.
+
+이러한 처리가 이루어지는 `callback` 함수를 만들고, `super` 를 통해, 부모 `Class` 로 보내어 해당 `Strategy` 를 생성할 수 있도록 만든다.
+
+```ts
+
+    constructor(...args: any[]) {
+      // callback 생성
+      const callback = async (...params: any[]) => {
+        const done = params[params.length - 1];
+        try {
+          const validateResult = await this.validate(...params);
+          if (Array.isArray(validateResult)) {
+            done(null, ...validateResult);
+          } else {
+            done(null, validateResult);
+          }
+        } catch (err) {
+          done(err, null);
+        }
+      };
+      // 부모 Strategy Class 에 인자와, callback 전달
+      super(...args, callback);
+
+      // Strategy 등록
+      const passportInstance = this.getPassportInstance();
+      if (name) {
+        passportInstance.use(name, this as any);
+      } else {
+        passportInstance.use(this as any);
+      }
+    }
+```
+
+이후에는, 만든 `Strategy` 를 등록하는 과정이 필요하다.  
+이를 위해 아까 만든 `getPassportInstance` 를 불러온후,해당 `passportInstance` 의 `use` 를 사용하여  
+등록하도록 한다.
+
+이때, `MixinStrategy` 의 인자로 `name` 값이 있다면, 해당 전략의 이름을 인자로 받은 `name` 값으로 설정하고, 그렇지 않다면, `Strategy` 의 이름으로한 전략을 등록한다.
+
+다시, `Strategy` 를 구현하는 로직으로 되돌아가보자.
+
+```ts
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { PassportStrategy } from '@nestjs/passport';
+import { Injectable } from '@nestjs/common';
+import { jwtConstants } from './constants';
+
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor() {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      secretOrKey: jwtConstants.secret,
+    });
+  }
+
+  async validate(payload: any) {
+    return { userId: payload.sub, username: payload.username };
+  }
+}
+```
+
+이제 이 로직이 이해가 가기 시작한다.
+위 로직에서 `PassportStrategy` 를 불러와 사용할 `Strategy` 를 인자값으로 넘겨주면,  
+추상클래스인 `MixinStrategy` 를 상속받아서 `JwtStrategy` 를 구현하게 된다.
+
+이때, 추상메서드인 `validate` 함수를 직접 구현했으며, 이는 추후, 사용되는 전략에  
+넘길 `callback` 의 `done` 에 넘기는 값을 리턴해주는것임을 알수 있다.
+
+`constructor` 를 보면 `super` 를 통해 옵션값을 넘기는 것을 볼 수 있는데,  
+이를 통해 `MixinStrategy` 의 `...args` 로 해당 옵션값이 넘어가고, `MixinStrategy` 가 확장한  
+`Strategy` 에 `...args` 와 `callback` 을 `super` 를통해 전달되는것으로 이해할 수 있다.
+
+이러한 모든 동작을 `class` 로 추상화하여, 간단한 로직만을 보여주어 처리할 수 있도록 만든것이  
+객체지향의 장점인가 다시한번 느끼게된다.
+
+이렇게 `nestjs/passport` 의 `Strategy` 가 어떠한 동작으로 작동하는지 살펴보았다.
+그렇다면, `passport` 는 해당 전략을 사용하기 위해, `passport.authenticate` 를 사용하여 등록된 전략을 호출해야 하는데, 이 로직은 어디에 있을까?
+
+이를 사용하기 위해 `nestjs/passort` 의 `guard` 를 사용하여 구현해야만 한다.
+
+### nestjs/passport Guard
+
+현재까지 블로그 작성하면서 가드 관련된 부분에 대해서 정리해놓은 글이 없다.
+`nestjs` 의 `Guard` 는 `권한`, `역할`, `ACL` 등에 따라 요청이 라우트 핸들러에 의해 처리될지 여부를 결정하는데 사용된다.
+
+사용법은 기존의 `Provider` 와 비슷한데, `@Injectable()` 데커레이터와 같이 사용한다.
+
+추가적인것이 있다면, `canActive` 라는 인터페이스를 불러와서 구현해야 한다.
+
+`canActive` 는 현재 요청이 혀용되는지 여부를 `boolean` 값으로 반환하는 함수이다.
+
+```ts
+@Injectable()
+export class AuthAGuard implements CanActive {
+  constructor(private readonly authSrevice: AuthService) {}
+
+  canActive(context: ExecutionContext) {
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      return false
+    }
+    return true;
+  }
+}
+```
+
+여기서 궁금한 부분은 `ExecutionContext` 와 `CanActive` 는 의 구현사항이다.
+
+> `nestjs` 에 있는 `CanActive` 인터페이스
+```ts
+// nest/packages/commons/interface/features/can-active.interface.ts
+
+import { Observable } from 'rxjs';
+import { ExecutionContext } from './execution-context.interface';
+
+/**
+ * Interface defining the `canActivate()` function that must be implemented
+ * by a guard.  Return value indicates whether or not the current request is
+ * allowed to proceed.  Return can be either synchronous (`boolean`)
+ * or asynchronous (`Promise` or `Observable`).
+ *
+ * @see [Guards](https://docs.nestjs.com/guards)
+ *
+ * @publicApi
+ */
+export interface CanActivate {
+  /**
+   * @param context Current execution context. Provides access to details about
+   * the current request pipeline.
+   *
+   * @returns Value indicating whether or not the current request is allowed to
+   * proceed.
+   */
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean>;
+}
+```
+
+여기에 `CanActive interface` 코드가 있다.
+구현사항으로는, `canActive` 함수를 구현하도록 되어있을뿐, 다른것은 없다.
+
+그리고, 반환값역시 예상대로 `boolean` 이며, `Sync` 인지 `Async` 인지에 따라 다를뿐 동일하다.
+
+이제 `canActivate` 의 인자인 `context` 의 타입 `ExecutionContext` 에 대해서 살펴보자.
+
+```ts
+import { Type } from '../index';
+import { ArgumentsHost } from './arguments-host.interface';
+
+/**
+ * Interface describing details about the current request pipeline.
+ *
+ * @see [Execution Context](https://docs.nestjs.com/guards#execution-context)
+ *
+ * @publicApi
+ */
+export interface ExecutionContext extends ArgumentsHost {
+  /**
+   * Returns the *type* of the controller class which the current handler belongs to.
+   */
+  getClass<T = any>(): Type<T>;
+  /**
+   * Returns a reference to the handler (method) that will be invoked next in the
+   * request pipeline.
+   */
+  getHandler(): Function;
+}
+```
+
+`ExecutionContext` 는 `AgrumentsHost` 를 상속받아 구현되어 있으며, 더불어 `getClass` 와 `getHandler` 를 가진 인터페이스이다.
+
+일단, `ExecutionContext` 에서 구현하는메서드를 살펴보도록한다.
+
+- getClass  
+이 메서드는 현재 실행중인 `handler` 가 속한 `controller class` 를 리턴한다.
+
+- getHandler
+이 메서드는 `request pipeline` 에서 다음에 호출될 핸들러에 대한 참조를 리턴한다
+
+그럼 `request pipeline` 이란 무엇일까?
+
+> `NestJs` 어플리케이션에서 요청이 처리되는 방법을 말한다.
+> 보통 `request` 를 처리할때, `pipeline` 을 갖는데, 그 순서는 다음과 같다. 
+>
+> Middleware -> gaurd -> pipe -> controlelr -> servide 
+>
+> 이러한 시퀀스로 구성되어, 처리가 이루어지는데 이러한 순서를
+> `requst pipeline` 이라고 부른다.
+
+그렇다면, 꼬리에 꼬리를물어 `ArgumentsHost` 에 대해서 보도록 하자.
+
+```ts
+
+export type ContextType = 'http' | 'ws' | 'rpc';
+
+/**
+ * Methods to obtain request and response objects.
+ *
+ * @publicApi
+ */
+export interface HttpArgumentsHost {
+  /**
+   * Returns the in-flight `request` object.
+   */
+  getRequest<T = any>(): T;
+  /**
+   * Returns the in-flight `response` object.
+   */
+  getResponse<T = any>(): T;
+  getNext<T = any>(): T;
+}
+
+/**
+ * Methods to obtain WebSocket data and client objects.
+ *
+ * @publicApi
+ */
+export interface WsArgumentsHost {
+  /**
+   * Returns the data object.
+   */
+  getData<T = any>(): T;
+  /**
+   * Returns the client object.
+   */
+  getClient<T = any>(): T;
+}
+
+/**
+ * Methods to obtain RPC data object.
+ *
+ * @publicApi
+ */
+export interface RpcArgumentsHost {
+  /**
+   * Returns the data object.
+   */
+  getData<T = any>(): T;
+
+  /**
+   * Returns the context object.
+   */
+  getContext<T = any>(): T;
+}
+
+/**
+ * Provides methods for retrieving the arguments being passed to a handler.
+ * Allows choosing the appropriate execution context (e.g., Http, RPC, or
+ * WebSockets) to retrieve the arguments from.
+ *
+ * @publicApi
+ */
+export interface ArgumentsHost {
+  /**
+   * Returns the array of arguments being passed to the handler.
+   */
+  getArgs<T extends Array<any> = any[]>(): T;
+  /**
+   * Returns a particular argument by index.
+   * @param index index of argument to retrieve
+   */
+  getArgByIndex<T = any>(index: number): T;
+  /**
+   * Switch context to RPC.
+   * @returns interface with methods to retrieve RPC arguments
+   */
+  switchToRpc(): RpcArgumentsHost;
+  /**
+   * Switch context to HTTP.
+   * @returns interface with methods to retrieve HTTP arguments
+   */
+  switchToHttp(): HttpArgumentsHost;
+  /**
+   * Switch context to WebSockets.
+   * @returns interface with methods to retrieve WebSockets arguments
+   */
+  switchToWs(): WsArgumentsHost;
+  /**
+   * Returns the current execution context type (string)
+   */
+  getType<TContext extends string = ContextType>(): TContext;
+}
+
+```
+
+`ArgumentsHost Interface` 는 핸들러에 전달되는 인수를 검색하는 메서드를 제공한다.
+
+이때, 각 메서드는 종류에 따라 다른 인터페이스를 갖는데, 각 사용하는 인터페이스는 다음의 의미를 가지고 만들어졌다. 
+
+- `HttpArgumentHost`  
+`HTTP` 요청과 응답을 검색하는 메서드를 제공
+
+- `WsArgumentsHost`  
+`WebSocket` 데이터와 클라이언트를 검색하는 메서드를 제공
+
+- `RpcArgumentsHost`  
+`Rpc`데이터와 컨텍스트를 검색하는 메서드를 제공
+
+이제 이 인터페이스를 반환하는 `ArgumentsHost` 의 각 메서드를 살펴본다.
+
+- `getArgs()`  
+핸들러에 전달되는 인수의 배열을 반환
+
+- `getArgsByIndex()`  
+특정 인수를 인텍스별로 반환
+
+- `switchToRpc()`  
+`RPC` 컨텍스트로 전환
+
+- `switchToHttp()`  
+`HTTP` 컨텍스트로 전환
+
+- `switchToWs()`  
+`WS` 컨텍스트로 전환
+
+- `getType()`  
+현재 실행 컨텍스트의 유형을 반환
+
+이와 같은 방식의 `ArgumentsHost` 를 확장한 `ExecutionContext` 를 사용하면, `request pipeline` 상 `request` 가 `service` 로직으로 가기전에 `HTTP` 의 `request` 객체를 확인하고 객체를 넘길지 안넘길지 결정이 가능하다.
+
+즉, 말그대로 중간에서 `Guard` 할수 있는것이다.
+이제 `Guard` 에 대해서 알게 되었으니, 다시 `nestjs/passport` 의 `Guard` 에 대해서 살펴본다.
+
+```ts
+import {
+  CanActivate,
+  ExecutionContext,
+  Inject,
+  Logger,
+  mixin,
+  Optional,
+  UnauthorizedException
+} from '@nestjs/common';
+import * as passport from 'passport';
+import { Type } from './interfaces';
+import {
+  AuthModuleOptions,
+  IAuthModuleOptions
+} from './interfaces/auth-module.options';
+import { defaultOptions } from './options';
+import { memoize } from './utils/memoize.util';
+
+export type IAuthGuard = CanActivate & {
+  logIn<TRequest extends { logIn: Function } = any>(
+    request: TRequest
+  ): Promise<void>;
+  handleRequest<TUser = any>(
+    err,
+    user,
+    info,
+    context: ExecutionContext,
+    status?
+  ): TUser;
+  getAuthenticateOptions(
+    context: ExecutionContext
+  ): IAuthModuleOptions | undefined;
+};
+export const AuthGuard: (type?: string | string[]) => Type<IAuthGuard> =
+  memoize(createAuthGuard);
+
+const NO_STRATEGY_ERROR = `In order to use "defaultStrategy", please, ensure to import PassportModule in each place where AuthGuard() is being used. Otherwise, passport won't work correctly.`;
+const authLogger = new Logger('AuthGuard');
+
+function createAuthGuard(type?: string | string[]): Type<CanActivate> {
+  class MixinAuthGuard<TUser = any> implements CanActivate {
+    @Optional()
+    @Inject(AuthModuleOptions)
+    protected options: AuthModuleOptions = {};
+
+    constructor(@Optional() options?: AuthModuleOptions) {
+      this.options = options ?? this.options;
+      if (!type && !this.options.defaultStrategy) {
+        authLogger.error(NO_STRATEGY_ERROR);
+      }
+    }
+
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+      const options = {
+        ...defaultOptions,
+        ...this.options,
+        ...(await this.getAuthenticateOptions(context))
+      };
+      const [request, response] = [
+        this.getRequest(context),
+        this.getResponse(context)
+      ];
+      const passportFn = createPassportContext(request, response);
+      const user = await passportFn(
+        type || this.options.defaultStrategy,
+        options,
+        (err, user, info, status) =>
+          this.handleRequest(err, user, info, context, status)
+      );
+      request[options.property || defaultOptions.property] = user;
+      return true;
+    }
+
+    getRequest<T = any>(context: ExecutionContext): T {
+      return context.switchToHttp().getRequest();
+    }
+
+    getResponse<T = any>(context: ExecutionContext): T {
+      return context.switchToHttp().getResponse();
+    }
+
+    async logIn<TRequest extends { logIn: Function } = any>(
+      request: TRequest
+    ): Promise<void> {
+      const user = request[this.options.property || defaultOptions.property];
+      await new Promise<void>((resolve, reject) =>
+        request.logIn(user, (err) => (err ? reject(err) : resolve()))
+      );
+    }
+
+    handleRequest(err, user, info, context, status): TUser {
+      if (err || !user) {
+        throw err || new UnauthorizedException();
+      }
+      return user;
+    }
+
+    getAuthenticateOptions(
+      context: ExecutionContext
+    ): Promise<IAuthModuleOptions> | IAuthModuleOptions | undefined {
+      return undefined;
+    }
+  }
+  const guard = mixin(MixinAuthGuard);
+  return guard;
+}
+
+const createPassportContext =
+  (request, response) => (type, options, callback: Function) =>
+    new Promise<void>((resolve, reject) =>
+      passport.authenticate(type, options, (err, user, info, status) => {
+        try {
+          request.authInfo = info;
+          return resolve(callback(err, user, info, status));
+        } catch (err) {
+          reject(err);
+        }
+      })(request, response, (err) => (err ? reject(err) : resolve()))
+    );
+```
+
+여기서 중요한 부분은 `canActive` 부분과 `createPassportContext` 로 생각이든다.
+
+`createPassportContext` 는 `passport` 의 `authenticate` 를 실행시켜, 해당 전략이 실행될수 있도록 만드는 함수이다.
+
+`MixinAuthGuard` 안의 `canActivate` 는 실제 `Guard` 의 `canActive` 를 실행하고, 아까 언급한 `createPassportContext` 함수를 호출해서 처리할 수 있도록 해주는 함수이다.
+
+만약, `callback` 으로 `handleRequest` 를 사용하여, `user` 가 없거나, `err` 가 있으면, `UnauthorizedException` 이 발생하며, 그렇지 않을경우 `user` 값을 내보낸다.
+
+그러한 `user` 값을 `options.property` 값을 `key` 로 하는 `request` 객체에 할당하고, `true` 를 반환하는 로직이다.
+
+이로인해, `Passport` 에서 제공하는 `authenticate` 관련 로직도 처리되며, 중간에 `user` 가 있는지 없는지에 따라 `boolean` 값 및 `exception` 을 실행시키는 모든 조건을 충족한 `Guard` 가 만들어졌다.
+
+이제 `Docs` 에서 `Guard` 를 어떻게 사용하고 있는지 살펴보도록 한다.
+
+```ts
+import { Injectable } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
+@Injectable()
+export class JwtAuthGuard extends AuthGuard('jwt') {}
+
+```
+
+위는 `jwt` 를 넘겨서 `passport.authenticate` 를 실행하는 로직이라는것을 볼수 있다.
+
+`passport` 는 `passport.authenticate` 를 실행할때, 해당 전략을 실행한후, 그 전략의 반환된 값을 받아 `requst` 객체의 `user` (`default property` 가 `user` 라면...) 에 값을 넣어준다.
+
+`Guard` 는 이러한 방식을 구현해줌과 동시에, 중간에서 `canActivate` 함수를 실행시켜, `Strategy` 에서 반환된 값이 없거나 `error` 가 발생하면, 더이상 진행되지 않도록 막아주는 효과도 같이 병행해준다.
+
+이제 이러한 모든 로직이 어떻게 동작하는지 그 흐름을 이해하게 되었다.
+
+`nestjs` 를 공부하면서 `nestjs/passport` 가 대체 어떠한 흐름으로 구성되는지, 그 연결점을 알기가 어려웠다.
+
+하지만, `code` 와 함께 그 흐름을 분석하면서 알아가다 보니, 모든 코드를 완벽하게 이해했다고 말하기는 어렵지만, `passport` 를 어떻게 `wrapping` 하고, `nestjs` 에 맞도록 만들었는지 알게된 귀중한 시간이었던것 같다.
+
+> 물론, 이렇게 코드분석하고 찾아보고 하나하나 알아보기까지 시간이 조금 걸려서 진도가 늦어진부분이 없지 않아 있다...ㅠㅠ
+>
+
+일허게 `passport` 동작원리를 이해하기 위해 앞으로 더 알아야 할 것들을 알게 된 기분이다.
+
+추후 시간이 된다면 `OAuth` 관련 부분과 함께, `HTTP`, `Network` 지식을 쌓아가도록 노력해야 겠다.
