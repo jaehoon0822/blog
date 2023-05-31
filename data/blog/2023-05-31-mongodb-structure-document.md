@@ -84,15 +84,15 @@ data 구조를 알기 전에 `Mongodb` 에서 사용되는 `Type` 들만 살펴�
 >
 > 이는 `javascript` 가 `64bit floating point` 로 작동되는것에 기인한 것으로 생각한다. 
 
-Internger (int32) </br>
+Internger (int32) <br/>
 ```sh
 > db.products.insertOne({quantity: Int32(4)}) // Int
 ```
-NumberLong (int64) </br>
+NumberLong (int64) <br/>
 ```sh
 > db.products.insertOne({quantity: Long("1")}) // Long
 ```
-NumberDecimal </br>
+NumberDecimal <br/>
 ```sh
 > db.products.insertOne({price: 12.99}) // Double
 
