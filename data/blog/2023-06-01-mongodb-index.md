@@ -126,7 +126,9 @@ summary: 'index에 대해서'
 
 또한, 어떠한 `field` 를 우선할지도 같이 정해야 한다.
 
+```sh
 > db.posts.createIndex({ rating: 1, title: -1 })
+```
 
 `rating` 은 오름차순으로, `title` 은 내림차순으로 `Index` 를 생성했다.
 
