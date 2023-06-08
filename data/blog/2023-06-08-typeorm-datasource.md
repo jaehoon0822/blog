@@ -1,9 +1,9 @@
 ---
-title: 'typeorm 에 대해서'
-date: '2023-05-15'
-tags: ['typeorm', 'ORM', `Data Source`]
+title: 'typeorm datasource 에 대해서'
+date: '2023-06-08'
+tags: ['typeorm', 'ORM', 'Data Source']
 draft: false
-summary: 'typeorm 에 대해서'
+summary: 'typeorm datasource 에 대해서'
 ---
 
 # `typeorm` 에 대해서 알아본다.
