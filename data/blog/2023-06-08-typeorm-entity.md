@@ -624,7 +624,7 @@ export class User {
 - ***array: boolean***  
 `Postgres` 및 `CockroachDB` 의 `array` 컬럼타입을 사용한다.  
 
-- ***<p>transformer: { from(value: DatabaseType): EntityType, to(value: EntityType): DatabaseType }</p>***
+- ***transformer***  
 임의의 `EntityType` 속성을 `DB` 에서 지원하는 `DB Type` 유형으로 변환하는데 사용한다고 한다.  
 (여기서 이를 `marshal` 이라고 표현하는데, 이 뜻이 변환을 말하는것 같다.. )  
 이부분은 조금 더 살펴보아야 겠다.  
