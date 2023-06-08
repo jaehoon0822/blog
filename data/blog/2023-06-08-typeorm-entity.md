@@ -96,8 +96,9 @@ export class User {
     id: number
 }
 
-```
-`primary key` 는 하나뿐만 아닌 `multiply primary key` 로 사용하기도 한다.
+``Object.openSync (node:fs:601:3)
+12:03:49.278	    at Object.readFileSync (node:fs:469:35)
+12:03:49.278	
 
 > 보통 `modeling` 시 어떠한 `table` 에 종속된 `column` 이 있을때 정규화시켜, `parent table id` 와 `child table id` 를 합쳐서 `primary key` 로 만들기도 한다.
 
@@ -750,3 +751,66 @@ export class Category {
 이 부분에 대한 개념정도는 이해한 부분으로, 이 `Logic` 이 어떻게 이루어져 있을지 머릿속으로 잘 그려지지는 않는다.
 
 일단, 이러한 부분을 제공하며 사용할 수 있다는 정도로 넘어가고, 더 자세한 부분은 `SQL` 방법론들을 보면서 익히도록 하는것이 좋을 듯 싶다.
+
+## Embedded Entities
+
+`TypeORM` 은 `Class inheritance` 뿐만 아니라,  
+`Enitity` 를 내장할 수 있는 방법역시 제공한다.
+
+다음을 보자.
+
+```ts
+import { Column } from "typeorm"
+
+export class Name {
+    @Column()
+    first: string
+
+    @Column()
+    last: string
+}
+```
+
+위는 `Name` 이라는 `Column` 으로 이루어진 `Class` 이다.  
+중요한건 `Entity` 데커레이터를 사용하지 않았다는 점이다.
+
+이는 `Embedded Column` 으로 사용하기 위한 초석이다.
+
+```ts
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Name } from "./Name"
+
+@Entity()
+export class User {
+    @PrimaryGeneratedColumn()
+    id: string
+
+    @Column(() => Name)
+    name: Name
+
+    @Column()
+    isActive: boolean
+}
+```
+
+보았는가? 
+위는 `Name` 클래스를 가져온후, `Column` 데커레이터에 함수로 `Name` 을 전달하여, `name` 컴럼을 만들었다.
+
+이때, `TypeORM` 은 `colums` 를 `connect` 할 수 있다고 표현한다.
+
+이제 해당 `Colume` 을 `Table` 로 만들어 보면 다음처럼 이루어져 있다.
+
+```sh
++-------------+--------------+----------------------------+
+|                          user                           |
++-------------+--------------+----------------------------+
+| id          | int(11)      | PRIMARY KEY AUTO_INCREMENT |
+| nameFirst   | varchar(255) |                            |
+| nameLast    | varchar(255) |                            |
+| isActive    | boolean      |                            |
++-------------+--------------+----------------------------+
+```
+
+이는 마치 컴포넌트를 재사용하는 방식처럼 자주 사용되는 `Column` 을 만들어 사용하기 용이한듯 싶다.
+
+
