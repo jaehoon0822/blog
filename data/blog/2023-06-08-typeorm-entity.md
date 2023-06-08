@@ -668,6 +668,8 @@ export class Post extends Content {
 
 `TypeORM` 은 `Adjacency list` 및 `Closure table` 을 `tree structure` 저장 패턴으로 지원한다.
 
+> `Tree entities` 에 대해서는 기본적인 개념을 알고 보아야 할것같다. 이부분에 대해서는 추가적인 내용으로 공부내용을 작성할 생각이다.
+
 ### Adjacency list
 
 `Adjacency list(인접 목록)` 은 그냥 자체 참조가 가능한 모델이다.  
@@ -813,4 +815,296 @@ export class User {
 
 이는 마치 컴포넌트를 재사용하는 방식처럼 자주 사용되는 `Column` 을 만들어 사용하기 용이한듯 싶다.
 
+## Concrete Table inheritance(구상 테이블 상속)
+코드의 중복을 줄이는데 `상속` 만큼 좋은것은 없다.  
+다음을 보자.
 
+```ts
+@Entity()
+export class Photo {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    title: string
+
+    @Column()
+    description: string
+
+    @Column()
+    size: string
+}
+
+@Entity()
+export class Question {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    title: string
+
+    @Column()
+    description: string
+
+    @Column()
+    answersCount: number
+}
+
+@Entity()
+export class Post {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    title: string
+
+    @Column()
+    description: string
+
+    @Column()
+    viewCount: number
+}
+```
+
+딱 보아도, `id`, `title`,`description` 이 중복됨을 보인다.
+앞에서는 `Embedded Column` 을 사용하여 중복됨을 피했지만,  
+
+`abstract class` 를 사용하여, 중복되는 구체적 로직들을 상속하여 처리 가능하다.
+
+```ts
+export abstract class Content {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    title: string
+
+    @Column()
+    description: string
+}
+
+@Entity()
+export class Photo extends Content {
+    @Column()
+    size: string
+}
+
+@Entity()
+export class Question extends Content {
+    @Column()
+    answersCount: number
+}
+
+@Entity()
+export class Post extends Content {
+    @Column()
+    viewCount: number
+}
+```
+
+부모로 부터 상속받아, `Entity` 로 만든다.
+
+## Single Table inheritance
+
+`TypeORM` 은 `Concrete Table` 이 아닌, `Single Table` 로 부터의 상속도 지원한다.  
+
+이때 중요한 부분은 `@TableInheritance` 데커레이터를 사용하여, 상속을 받을 `Single Table` 을 선언하고, 이후 `@childEntity` 를 사용하여 `Single Table` 의 자식으로 들어갈 `Class` 를 만든다.
+
+```ts
+@Entity()
+@TableInheritance({ column: { type: "varchar", name: "type" } })
+export class Content {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    title: string
+
+    @Column()
+    description: string
+}
+```
+```ts
+@ChildEntity()
+export class Photo extends Content {
+    @Column()
+    size: string
+}
+
+@ChildEntity()
+export class Question extends Content {
+    @Column()
+    answersCount: number
+}
+
+@ChildEntity()
+export class Post extends Content {
+    @Column()
+    viewCount: number
+}
+```
+
+이제 `photos`, `questions`, `posts` 는 `contents` 테이블안에 `save` 된다.
+
+보면서 아래의 구문이 약간은 이상하게 보인다..
+```ts
+@TableInheritance({ column: { type: "varchar", name: "type" } })
+```
+
+하지만, 잘 생각해보면, 상속받을 `column` 의 타입이 `varchar` 이며 이름은 `type` 을 가지면, 상속받을 수 있도록 지정한것으로 보인다.
+
+그러므로 모든 `@Column` 은 내부적으로 `type` 을 가지므로,  
+모든 `Column` 을 상속받는다는 뜻으로 이해하고 있다.
+
+## View Entity
+
+`Database View` 를 `mapping` 한 `Class` 이다.
+이를 위해서 `@ViewEntity` 데커레이터를 사용하면 쉼게 새로운 `Class` 를 정의할 수 있다.
+
+`@ViewEntity`  는 몇가지 옵션들이 존재하는데 다음과 같다.
+
+- name  
+`view` 의 이름이다.  
+이름을 지정하지 않는다면 `entity class name` 으로 생성된다.
+
+- database  
+`DB server` 안의 `database` 이름이다.
+
+- schema  
+`Schema` 이름이다.
+
+- expression  
+`view` 를 정의할 표현식이다.  
+이는 반드시 정의되어야한다.
+
+- dependsOn  
+현재 `view` 가 의존하는 다른 `view` 들의 `list` 를 말한다.  
+만약 `view` 에 정의된것이 다른 `view` 를 사용한다면,  
+올바르게 `migration` 될 수 있도록 올바른 순서로 정의해야 한다.
+
+위의 `expression` 은 다음처럼 작성할 수 있다.
+
+```ts
+@ViewEntity({
+    expression: `
+        SELECT "post"."id" AS "id", "post"."name" AS "name", "category"."name" AS "categoryName"
+        FROM "post" "post"
+        LEFT JOIN "category" "category" ON "post"."categoryId" = "category"."id"
+    `
+})
+```
+또는 `QueryBuilder` 를 사용하여 정의가능하다.
+
+```ts
+@ViewEntity({
+    expression: (dataSource: DataSource) => dataSource
+        .createQueryBuilder()
+        .select("post.id", "id")
+        .addSelect("post.name", "name")
+        .addSelect("category.name", "categoryName")
+        .from(Post, "post")
+        .leftJoin(Category, "category", "category.id = post.categoryId")
+})
+```
+
+이렇게 생성된 `view` 는 `DataSource` 의 `entities` 배열에 등록되어야 한다.  
+
+```ts
+import { DataSource } from "typeorm"
+import { UserView } from "./entity/UserView"
+
+const dataSource = new DataSource({
+    type: "mysql",
+    host: "localhost",
+    port: 3306,
+    username: "test",
+    password: "test",
+    database: "test",
+    entities: [UserView],
+})
+```
+
+자,  이제 해당 `@ViewEntity` 를 사용할 `Class` 를 보도록 하자.
+
+```ts
+import { ViewEntity, ViewColumn } from "typeorm"
+
+@ViewEntity({
+    expression: `
+        SELECT "post"."id" AS "id", "post"."name" AS "name", "category"."name" AS "categoryName"
+        FROM "post" "post"
+        LEFT JOIN "category" "category" ON "post"."categoryId" = "category"."id"
+    `,
+})
+export class PostCategory {
+    @ViewColumn()
+    id: number
+
+    @ViewColumn()
+    name: string
+
+    @ViewColumn()
+    categoryName: string
+}
+```
+
+위는 `@ViewEntity` 에서 정의한 `expression` 에 따라,  
+`@ViewColumn` 데커레이터를 사용한것을 볼 수 있다.  
+
+`QueryBuilder` 를 사용한 `@ViewEntity` 는 다음과 같다.
+
+```ts
+import { ViewEntity, ViewColumn } from "typeorm"
+
+@ViewEntity({
+    expression: (dataSource: DataSource) =>
+        dataSource
+            .createQueryBuilder()
+            .select("post.id", "id")
+            .addSelect("post.name", "name")
+            .addSelect("category.name", "categoryName")
+            .from(Post, "post")
+            .leftJoin(Category, "category", "category.id = post.categoryId"),
+})
+export class PostCategory {
+    @ViewColumn()
+    id: number
+
+    @ViewColumn()
+    name: string
+
+    @ViewColumn()
+    categoryName: string
+}
+```
+
+###  View Column options
+
+`@ViewColomn` 에도 여러 옵션들이 존재한다.
+
+- name: string  
+`Column` 이름을 지정한다.
+
+- transformer  
+지원가능한 `Type` 으로 변경해주는 변경자인듯 한데,  
+이부분은 잘 와닫지 않아서 추후 더 살펴볼 예정이다.
+
+## Seperating Entity Definition
+
+해당 부분은 `Sequelize` 의 `define` 처럼 사용가능하도록  
+만든 문법 같은데 많이 사용하지는 않을 것 같아서,  
+내용을 정리하지는 않는다.
+
+혹시몰라
+[Seperating Entity Definition](https://typeorm.io/separating-entity-definition) 여기세서 볼 수 있도록 링크는 남기도록 한다.
+
+## 마무리
+
+확실히 `API` 가 참 많기도 하며, 기본적인 개념이 밑바탕이 되어야 이해가 갈만한 내용이 많다.
+
+특히 `Tree Entities` 부분은, 기본적인 개념을 밑바탕이 있어야  
+이해가 수월할 듯 싶다.
+
+다음은, `Relations` 관련 내용을 정리하도록 한다.
+
+오늘내로 내용 정리이후에, `API` 코드 작성을 목표로 하고 있는데, 아직 이해해야할 부분이 많으므로 최대한 목표로 삼은 부분까지 공부하도록 할것이다.
