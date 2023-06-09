@@ -16,20 +16,9 @@ summary: 'typeorm repository 에 대해서'
 여기서는 `Repository` 먼저 보고 이후 `EntityManager`, `QueryBuilder` 관련  
 `API` 를 살펴보도록 할것이다.
 
-`Repository` 를 사용하기 위해서는 `DataSource` 에서 `manager` 를 불러와 사용하거나, `getRepository` 를 사용하여 가져올 수 있다.
+`Repository` 를 사용하기 위해서는 `DataSource` 에서 `getRepository` 를 사용하여 가져올 수 있다.
 
-> `manager` 를 통한 `query`
-```ts
-mport { DataSource } from "typeorm"
-import { User } from "./entity/User"
-
-const myDataSource = new DataSource(/*...*/)
-const user = await myDataSource.manager.findOneBy(User, {
-    id: 1,
-})
-user.name = "Umed"
-await myDataSource.manager.save(user)
-```
+`Repository` 는 `EntityManager` 와 비슷하지만 다르게 `Entity` 위주의 세부적인 조작을 위해서 만들어졌다고 생각하면 된다.
 
 > `getRepository` 를 통한 `query`
 ```ts
@@ -42,8 +31,6 @@ const user = await userRepository.findOneBy({
 user.name = "Umed"
 await userRepository.save(user)
 ```
-
-개인적으로, `getRepository` 로 변수에 저정한후에, 해당 변수를 불러와서 사용하는것이 편할듯 싶다.
 
 `Repository` 는 총 3개의 ` Type` 이 존재한다.
 
@@ -621,8 +608,6 @@ export class UserController {
 
 이렇게, `Repository` 관련 내용을 살펴보았다.  
 보면서 `SQL` 관련 공부도 더러 되는것 같아 많은 이해가 쌓인 느낌이다.
-
-하지만, 취향에 따르겠지만, `Repository`, `EntityManager`, `QueryBuilder` 를 제공하는데, 어떠한것이 맞는지는 추후 지속적으로 사용해 보아야 겠다.
 
 다음은 `EntityManager` 에 대해서 살펴보도록 한다.
 
